@@ -409,22 +409,53 @@ class HomeController extends Controller
     return redirect()->back()->with('message', 'Your Cart is Updated Successfully');
   }
   
+  // public function show_cart()
+  // {
+  //   if (Auth::id()) {
+  //     Cart::where('deleted_at','<',today())->forceDelete();
+  //     $user = Auth::user();
+  //     $data = Cart::where('user_id', $user->id)->get();
+  //     if ($data->isEmpty()) {
+  //       return view('home.showcart', ['messagen' => 'Your cart is empty!']);
+  //     } else {
+  //       $total = Cart::where('user_id', $user->id)->sum('price');
+  //       return view('home.showcart', ['cartpro' => $data, 'total' => $total]);
+  //     }
+  //   } else {
+  //     return redirect('login');
+  //   }
+  // }
   public function show_cart()
-  {
+{
     if (Auth::id()) {
-      Cart::where('deleted_at','<',today())->forceDelete();
-      $user = Auth::user();
-      $data = Cart::where('user_id', $user->id)->get();
-      if ($data->isEmpty()) {
-        return view('home.showcart', ['messagen' => 'Your cart is empty!']);
-      } else {
-        $total = Cart::where('user_id', $user->id)->sum('price');
-        return view('home.showcart', ['cartpro' => $data, 'total' => $total]);
-      }
+        $user = Auth::user();
+
+        Cart::where('deleted_at', '<', Carbon::today())->forceDelete();
+
+        $data = Cart::where('user_id', $user->id)->get();
+
+        foreach ($data as $cartItem) {//notice that the get method get many model instance of this table so we can itterate over it 
+            if ($cartItem->updated_at <  Carbon::now()->subDays(30)) {
+                $product = Product::find($cartItem->product_id);
+                if ($product) {
+                    $product->increment('quantity', $cartItem->quantity);
+                }
+                $cartItem->forceDelete();
+            }
+        }
+
+        $data = Cart::where('user_id', $user->id)->get();
+
+        if ($data->isEmpty()) {
+            return view('home.showcart', ['messagen' => 'Your cart is empty!']);
+        } else {
+            $total = Cart::where('user_id', $user->id)->sum('price');
+            return view('home.showcart', ['cartpro' => $data, 'total' => $total]);
+        }
     } else {
-      return redirect('login');
+        return redirect('login');
     }
-  }
+}
   public function show_order()
   {
     if (Auth::id()) {
