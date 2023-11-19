@@ -448,6 +448,7 @@ class HomeController extends Controller
 
         if ($data->isEmpty()) {
             return view('home.showcart', ['messagen' => 'Your cart is empty!']);
+            
         } else {
             $total = Cart::where('user_id', $user->id)->sum('price');
             return view('home.showcart', ['cartpro' => $data, 'total' => $total]);

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 02, 2023 at 07:32 AM
+-- Generation Time: Nov 19, 2023 at 02:59 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.6
 
@@ -53,10 +53,8 @@ INSERT INTO `carts` (`id`, `name`, `email`, `phone`, `address`, `product_title`,
 (187, 'Natnael Berhanu', 'natman093@gmail.com', '09709516098', 'shola', 'Teddy bear', '580', '2', '1689399196.jpg', '18', '19', '2023-10-18 01:03:03', '2023-10-23 05:51:56', NULL),
 (202, 'Natnael Berhanu', 'natman093@gmail.com', '09709516098', 'shola', 'Men\'s Shirt', '490', '1', '1689402179.png', '23', '19', '2023-10-21 05:51:28', '2023-10-23 01:55:51', NULL),
 (204, 'Natnael Berhanu', 'natman093@gmail.com', '09709516098', 'shola', 'Men\'s Shirt', '450', '1', '1689400014.png', '4', '19', '2023-10-23 05:51:18', '2023-10-23 05:51:18', NULL),
-(207, 'Nati', 'natmansafari093@gmail.com', '0712911008', 'Bahirdar', 'Men\'s Shirt', '800', '1', '1698037780.jpg', '2', '27', '2023-10-25 05:04:53', '2023-10-25 05:08:33', NULL),
-(208, 'Nati', 'natmansafari093@gmail.com', '0712911008', 'Bahirdar', 'Men\'s Shirt', '800', '1', '1698037691.jpg', '1', '27', '2023-10-25 05:05:46', '2023-10-31 23:15:35', NULL),
-(209, 'Nati', 'natmansafari093@gmail.com', '0712911008', 'Bahirdar', 'Men Shoes', '1100', '1', '1689480304.jpg', '30', '27', '2023-10-31 23:16:17', '2023-10-31 23:25:06', '2023-10-31 23:25:06'),
-(210, 'Nati', 'natmansafari093@gmail.com', '0712911008', 'Bahirdar', 'Smart Watch', '4200', '2', '1691549130.jpg', '42', '27', '2023-10-31 23:24:31', '2023-10-31 23:24:46', '2023-10-31 23:24:46');
+(215, 'Nati', 'natmansafari093@gmail.com', '0712911008', 'Bahirdar', 'Samsung Galaxy A23', '8500', '1', '1689494565.jpg', '20', '27', '2023-11-14 00:30:51', '2023-11-14 00:32:44', NULL),
+(216, 'Nati', 'natmansafari093@gmail.com', '0712911008', 'Bahirdar', 'Apple Laptop', '22000', '1', '1691643363.jpg', '26', '27', '2023-11-14 00:31:02', '2023-11-14 00:31:24', NULL);
 
 -- --------------------------------------------------------
 
@@ -312,20 +310,20 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `title`, `description`, `product_status`, `image`, `category`, `quantity`, `price`, `discount_price`, `created_at`, `updated_at`) VALUES
-(1, 'Men\'s Shirt', 'Larger Size Shirt. Please Go To Store For More Options', 'New', '1698037691.jpg', 'Shirt', '18', '850', '800', '2023-10-23 02:08:11', '2023-10-31 23:15:36'),
-(2, 'Men\'s Shirt', 'Larger Size Shirt. Please Go To Store For More Options', 'New', '1698037780.jpg', 'Shirt', '19', '850', '800', '2023-10-23 02:09:40', '2023-10-25 05:08:33'),
+(1, 'Men\'s Shirt', 'Larger Size Shirt. Please Go To Store For More Options', 'New', '1698037691.jpg', 'Shirt', '19', '850', '800', '2023-10-23 02:08:11', '2023-11-14 00:21:15'),
+(2, 'Men\'s Shirt', 'Larger Size Shirt. Please Go To Store For More Options', 'New', '1698037780.jpg', 'Shirt', '20', '850', '800', '2023-10-23 02:09:40', '2023-11-14 00:06:56'),
 (3, 'Toy For Kids', 'Best Toy ever', '', '1690960493.png', 'Toy', '46', '300', '250', '2023-08-02 04:14:53', '2023-10-20 02:21:47'),
 (4, 'Men\'s Shirt', 'Larger Size Shirt. Please Go To Store For More Options', '', '1689400014.png', 'Shirt', '8', '550', '450', '2023-07-14 00:32:54', '2023-10-25 00:12:34'),
 (16, 'Neckless', 'Beautyful Neckless', 'New', '1689494448.png', 'Jewelry', '24', '10500', NULL, '2023-07-14 23:37:04', '2023-10-25 00:03:22'),
 (18, 'Teddy bear', 'Best Toy For Kid', '', '1689399196.jpg', 'Toy', '136', '350', '290', '2023-07-15 02:33:16', '2023-10-23 05:51:56'),
 (19, 'Apple Laptop', '7th Generation 1TB Storage 8GB RAM,4GB With graphics card', 'New', '1689399401.jpg', 'Laptop', '15', '25000', '22000', '2023-07-15 02:36:41', '2023-10-25 00:12:34'),
-(20, 'Samsung Galaxy A23', '64GB Storage by 4GB RAM', 'New', '1689494565.jpg', 'Mobile', '9', '9300', '8500', '2023-07-15 02:37:56', '2023-10-20 02:25:31'),
+(20, 'Samsung Galaxy A23', '64GB Storage by 4GB RAM', 'New', '1689494565.jpg', 'Mobile', '8', '9300', '8500', '2023-07-15 02:37:56', '2023-11-14 00:32:44'),
 (21, 'Women Dress', 'Beautyful  Dress', '', '1690434451.png', 'Women', '20', '2700', '2300', '2023-07-15 02:41:45', '2023-07-27 02:07:31'),
 (22, 'Nokia c21', '64GB Storage by 4GB RAM', '', '1689494823.jpg', 'Mobile', '11', '5900', '5500', '2023-07-15 02:43:59', '2023-10-19 22:24:38'),
 (23, 'Men\'s Shirt', 'XL Size Shirt. Please Go To Store For More Options', '', '1689402179.png', 'Shirt', '14', '550', '490', '2023-07-15 03:22:59', '2023-10-23 01:55:51'),
 (24, 'Men\'s Shirt', 'Larger Size Shirt. Please Go To Store For More OptionsUnique Shirt', '', '1689476844.png', 'Shirt', '15', '550', '490', '2023-07-16 00:07:24', '2023-07-16 00:07:24'),
 (25, 'Apple Laptop', '9th Generation 1TB Storage 16GB RAM,4GB With graphics card', '', '1689477166.jpg', 'Laptop', '15', '25000', '22000', '2023-07-16 00:12:46', '2023-08-14 05:19:00'),
-(26, 'Apple Laptop', '9th Generation 1TB Storage 16GB RAM,4GB With graphics card', 'New', '1691643363.jpg', 'Laptop', '15', '25000', '22000', '2023-07-16 00:14:26', '2023-08-22 22:24:24'),
+(26, 'Apple Laptop', '9th Generation 1TB Storage 16GB RAM,4GB With graphics card', 'New', '1691643363.jpg', 'Laptop', '14', '25000', '22000', '2023-07-16 00:14:26', '2023-11-14 00:31:25'),
 (27, 'Samsung Galaxy A50', '64GB Storage by 6GB RAM\r\n', 'New', '1689477553.jpg', 'Mobile', '14', '17000', '15000', '2023-07-16 00:19:13', '2023-10-20 22:19:59'),
 (28, 'Samsung Galaxy S20', '128GB Storage by 8GB RAM', '', '1689477627.jpg', 'Mobile', '10', '21000', '20000', '2023-07-16 00:20:27', '2023-08-10 21:27:56'),
 (29, 'Women Dress', 'Brand New Dress.Please Go To Store For More Options.', '', '1689479894.png', 'Women', '10', '2500', '2300', '2023-07-16 00:58:14', '2023-08-14 22:59:03'),
@@ -364,8 +362,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('FXqdHtUGfjKyqQVx4pAgoIkfgt3Hm4SOdYfXEOQG', 27, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 Edg/118.0.2088.61', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoibnZGcE56MmtRWVkxTWtrT1hTZldWeVRyT25OSGdaejBJUmRZUjcxRSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI3O30=', 1698806853),
-('iX88a3vSDoHO4lE7mROBFSKGjvxOrriM03JB3Jdm', 27, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 Edg/118.0.2088.61', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoibzlaU0l6Zm1EbFpZTjg0WXNJR3hUQk1yUm9LeVVoaDNLOHBxR25hTSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjI3O3M6MTA6InRvdGFscHJpY2UiO2E6MTp7czo1OiJ0b3RhbCI7ZDoxNjAwO319', 1698823292);
+('PjeG1uDTMkLI4seA61EKcqwh9IaCxIUeUnOQ0k9G', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiZmE3cHQ5bktrc3pYZlY4NGEzdnlDNWwxNmhRWnRUeXJQd0NjRzYxUSI7czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9sb2dpbiI7fX0=', 1699932832);
 
 -- --------------------------------------------------------
 
@@ -578,7 +575,7 @@ ALTER TABLE `wishlists`
 -- AUTO_INCREMENT for table `carts`
 --
 ALTER TABLE `carts`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=211;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=217;
 
 --
 -- AUTO_INCREMENT for table `catagories`
