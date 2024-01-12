@@ -61,8 +61,10 @@
                     </x-button>
                 </div>
                 <div>
-                    <a class="btn btn-primary" href="{{url('auth/login')}}">
-                        <i class="fa fa-google fa-lg mr-2"></i> Sign up with Google
+                    <a class="btn btn-dark" href="{{url('auth/login')}}">
+                        <!-- <i class="fa fa-google fa-lg mr-2"></i> Sign up with Google -->
+                        <img src="{{asset('images/google.svg')}}" alt="img" class="w-6 h-6 inline mr-2 " /> 
+                        Sign up with Google
                     </a>
                 </div>
             </form>

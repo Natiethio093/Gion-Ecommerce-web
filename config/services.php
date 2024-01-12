@@ -34,6 +34,5 @@ return [
       'client_id'=>'844170358778-etqrpn78faed31n92gru6n07g674fa6v.apps.googleusercontent.com',
       'client_secret'=>'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',
       'redirect'=>'http://127.0.0.1:8000/auth/google/callback',
-    //   'redirect' => 'http://127.0.0.1:8000/auth/google/signup/callback',
     ],
 ];

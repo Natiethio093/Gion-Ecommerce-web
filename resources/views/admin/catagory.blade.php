@@ -61,7 +61,7 @@
       opacity: 1;
     }
   </style>
-  <title>Catagory</title>
+  <title>Category</title>
 </head>
 
 <body>

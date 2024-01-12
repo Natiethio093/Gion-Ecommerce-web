@@ -13,6 +13,7 @@ use App\Models\Order;
 use App\Models\Customersell;
 use App\Models\Shipping;
 use App\Models\Wishlist;
+use Illuminate\Support\Facades\DB;
 use App\Notifications\EmailSeller;
 use Exception;
 use App\Notifications\SendEmailNotification;
@@ -40,19 +41,132 @@ class HomeController extends Controller
     $name = Auth::user()->name;
     $user = Auth::user();
     if ($usertype == '1') {
+
+      $currentYear = date('Y');
+      $previousYear = $currentYear - 1;
+      $twoYearsAgo = $currentYear - 2;
+      $fiftenYearsAgo =  $currentYear - 15;
+
+      $revenues = Order::selectRaw('SUM(price) as revenue, YEAR(created_at) as year, MONTH(created_at) as month')
+      ->where('payment_status', 'Paid')
+      ->whereYear('created_at', '>=', $twoYearsAgo)
+      ->groupBy('year', 'month')
+      ->get();
+
+      $revenueData = [];
+      $monthLabels = [];
+      $yearLabels = [];
+      // Loop through the revenue data and extract the revenue and month labels
+      foreach ($revenues as $revenue) {
+        $revenueData[] = $revenue->revenue;
+        $monthLabels[] = date('F', mktime(0, 0, 0, $revenue->month, 1,));
+        $yearLabels[] = date('Y', mktime(0, 0, 0, 1, 1, $revenue->year));
+      }
+      
+      $revenuesyear = Order::selectRaw('SUM(price) as revenue, YEAR(created_at) as year')
+        ->where('payment_status', 'Paid')
+        ->whereYear('created_at', '>=', $fiftenYearsAgo)
+        ->groupBy('year')
+        ->get();
+
+      $revenueDatayear = [];
+      $yearLabelsyear = [];
+
+      foreach ($revenuesyear as $revenueyear) {
+        $revenueDatayear[] = $revenueyear->revenue;
+        $yearLabelsyear[] = $revenueyear->year;
+      }
+      $orderItems = Order::select('product_id', 'product_title', 'eachquantity')
+      ->where('payment_status', 'Paid')
+      ->get();
+
+  $quantityData = [];
+  $productTitles = [];
+
+  foreach ($orderItems as $item) {
+      $productIds = explode(',', $item->product_id);
+      $productTitles = explode(',', $item->product_title);
+      $quantities = explode(',', $item->eachquantity);
+
+      foreach ($productIds as $key => $productId) {
+          $quantity = (int)$quantities[$key];
+
+          $productKey = $productId . '_' . $productTitles[$key];
+
+          if (!isset($quantityData[$productKey])) {
+              $quantityData[$productKey] = $quantity;
+          } else {
+              $quantityData[$productKey] += $quantity;
+          }
+
+          if (!in_array($productTitles[$key], $productTitles)) {
+              $productTitles[] = $productTitles[$key];
+          }
+      }
+  }
+
+  $orderedQuantities = array_values($quantityData);
+  $productTitles = array_values($productTitles);
+
+  $categoryCounts = Product::select('category', DB::raw('SUM(quantity) as total_quantity'))
+  ->groupBy('category')
+  ->get();
+
+$categoryPercentages = [];
+$categoryNames = [];
+
+$totalQuantity = $categoryCounts->sum('total_quantity');
+
+foreach ($categoryCounts as $categoryCount) {
+  $categoryName = $categoryCount->category;
+  $quantity = $categoryCount->total_quantity;
+
+  $percentage = ($quantity / $totalQuantity) * 100;
+
+  $categoryPercentages[] = $percentage;
+  $categoryNames[] = $categoryName;
+}
+$products = Product::select('title', 'orderQuantity')
+        ->get();
+
+    $producteachTitles = $products->pluck('title')->toArray();
+    $quantitieseach = $products->pluck('orderQuantity')->toArray();
+
       $product = Product::count();
-      $total_order = Order::count();
-      $total_customer = User::where('usertype', '0')->count();
-      $total_admin = User::where('usertype', '1')->count();
-      $total_revenue = Order::where('payment_status', 'Paid')->sum('price');
-      $total_deliverd = Order::where('delivery_status', 'Deliverd')->count();
-      $total_comment = Comment::count();
-      $total_processed = Order::where('delivery_status', 'Pending')->orWhere('delivery_status', 'Processing')->count();
-      return view('admin.home', [
-        'product' => $product, 'order' => $total_order, 'customer' => $total_customer,
-        'admin' => $total_admin, 'revenue' => $total_revenue, 'deliverd' => $total_deliverd,
-        'processing' => $total_processed, 'comment' => $total_comment
-      ]);
+      $order = Order::count();
+      $customer = User::where('usertype', '0')->count();
+      $admin = User::where('usertype', '1')->count();
+      $revenue = Order::where('payment_status', 'Paid')->sum('price');
+      $deliverd = Order::where('delivery_status', 'Delivered')->count();
+      $comment = Comment::count();
+      $processing = Order::where('delivery_status' , 'Pending')
+      ->orWhere('delivery_status', 'Processing')
+      ->count();
+
+      return view('admin.home', compact(
+      'product', 
+      'order', 
+      'customer', 
+      'admin', 
+      'revenue', 
+      'deliverd', 
+      'processing', 
+      'comment', 
+      'revenueData', 
+      'monthLabels', 
+      'yearLabels', 
+      'currentYear', 
+      'previousYear',
+      'revenueDatayear',
+      'yearLabelsyear',
+      'orderedQuantities',
+      'productTitles',
+      'categoryPercentages',
+      'categoryNames',
+      'producteachTitles',
+      'quantitieseach'
+    ));
+
     } else {
       $product = Product::where('quantity', '>', 0)->where('product_status', 'New')->paginate(9);
       return view('home.userpage', ['product' => $product]);
@@ -132,10 +246,28 @@ class HomeController extends Controller
 
   public function product_details(Request $req)
   {
-
     $id = $req->productId;
     $product = Product::find($id);
-    return view('home.product_details', ['product' => $product]);
+
+    if($product->orderQuantity > 35){
+      $star = 5;
+    }
+    else if($product->orderQuantity <= 35 && $product->orderQuantity > 15){
+      $star = 4;
+    }
+    else if($product->orderQuantity <= 15 && $product->orderQuantity > 5){
+      $star = 3;
+    }
+    else if($product->orderQuantity <= 5 && $product->orderQuantity > 3){
+      $star = 2;
+    }
+    else if($product->orderQuantity <= 3 && $product->orderQuantity > 1){
+      $star = 1;
+    }
+    else {
+      $star = 0;
+    }
+    return view('home.product_details', ['product' => $product,'star' => $star]);
   }
 
   public function product_detail($productId)
@@ -152,7 +284,6 @@ class HomeController extends Controller
     $id = $req->sellid;
     $product = Customersell::find($id);
     return view('home.product_detailseller', ['product' => $product]);
-    
   }
 
   public function store(Request $req)
@@ -160,15 +291,14 @@ class HomeController extends Controller
 
     $category = $req->productcategory;
     $product = Product::where('quantity', '>', 0)->where('category', $category)->get();
-    return view('home.store',compact('product'));
-
+    return view('home.store', compact('product'));
   }
 
   public function add_cart(Request $req)
   {
     if (Auth::id()) {
       $id = $req->productsId;
-      $user = Auth::user(); 
+      $user = Auth::user();
       if ($user->address == null && $user->address == null) {
         return redirect('newl')->with('message', 'Let Us Finish Your Set Up First!!');
       } else {
@@ -274,107 +404,103 @@ class HomeController extends Controller
     }
   }
 
-  public function show_wishlist(){
+  public function show_wishlist()
+  {
 
-    Wishlist::where('deleted_at','<',today())->forceDelete();
+    Wishlist::where('deleted_at', '<', today())->forceDelete();
 
     $user = Auth::user();
 
-    $wishlist = Wishlist::where('user_id',$user->id)->get();
+    $wishlist = Wishlist::where('user_id', $user->id)->get();
 
     if ($wishlist->isEmpty()) {
       return view('home.wishlist', ['messagen' => 'Your Wish List is empty!']);
+    } else {
+      return view('home.wishlist', compact('wishlist'));
     }
-    else{
-      return view('home.wishlist',compact('wishlist'));
-    }
-    
   }
 
-  public function add_wishlistfull(Request $req){
+  public function add_wishlistfull(Request $req)
+  {
     $id = $req->productsId;
 
-    if(Auth::user()){
-    $user =Auth::user();
+    if (Auth::user()) {
+      $user = Auth::user();
 
-    $product = Product::where('id',$id)->first();
+      $product = Product::where('id', $id)->first();
 
-    $existwish = Wishlist::where('user_id',$user->id)->where('product_id', $id)->first();
+      $existwish = Wishlist::where('user_id', $user->id)->where('product_id', $id)->first();
 
-    if( $existwish){
+      if ($existwish) {
 
-      return redirect()->back()->with('info','Product  already exist on your wishlist');
+        return redirect()->back()->with('info', 'Product  already exist on your wishlist');
+      } else {
+
+        $wishlist = new Wishlist();
+        $wishlist->user_id = $user->id;
+        $wishlist->product_id = $product->id;
+        $wishlist->product_name = $product->title;
+        $wishlist->image = $product->image;
+        $wishlist->price = $product->price;
+        $wishlist->save();
+
+        return redirect()->back()->with('success', 'Product  added to wishlist successfully!!');
+      }
+    } else {
+      return redirect('login');
     }
-    else{
-
-    $wishlist = new Wishlist();
-    $wishlist->user_id = $user->id;
-    $wishlist->product_id = $product->id;
-    $wishlist->product_name = $product->title;
-    $wishlist->image = $product->image;
-    $wishlist->price = $product->price;
-    $wishlist->save();
-
-    return redirect()->back()->with('success','Product  added to wishlist successfully!!');
-    }
-   }
-   else{
-    return redirect('login');
-   }
-
   }
 
-  public function add_wishlist(Request $req){
+  public function add_wishlist(Request $req)
+  {
     $id = $req->productsId;
-    if(Auth::user()){
-    $user =Auth::user();
+    if (Auth::user()) {
+      $user = Auth::user();
 
-    $product = Product::where('id',$id)->first();
+      $product = Product::where('id', $id)->first();
 
-    $existwish = Wishlist::where('user_id',$user->id)
-    ->where('product_id', $id)
-    ->where('deleted_at',null)
-    ->first();
+      $existwish = Wishlist::where('user_id', $user->id)
+        ->where('product_id', $id)
+        ->where('deleted_at', null)
+        ->first();
 
-    if( $existwish){
+      if ($existwish) {
 
-      return redirect('/#product')->with('info','Product  already exist on your wishlist');
+        return redirect('/#product')->with('info', 'Product  already exist on your wishlist');
+      } else {
+
+        $wishlist = new Wishlist();
+        $wishlist->user_id = $user->id;
+        $wishlist->product_id = $product->id;
+        $wishlist->product_name = $product->title;
+        $wishlist->image = $product->image;
+        $wishlist->price = $product->price;
+        $wishlist->save();
+
+        return redirect('/#product')->with('success', 'Product added to wishlist successfully!!');
+      }
+    } else {
+      return redirect('login');
     }
-    else{
-
-    $wishlist = new Wishlist();
-    $wishlist->user_id = $user->id;
-    $wishlist->product_id = $product->id;
-    $wishlist->product_name = $product->title;
-    $wishlist->image = $product->image;
-    $wishlist->price = $product->price;
-    $wishlist->save();
-
-    return redirect('/#product')->with('success','Product added to wishlist successfully!!');
-    }
-  }
-  else{
-    return redirect('login');
   }
 
-  }
-
-  public function delete_wish(Request $req){
+  public function delete_wish(Request $req)
+  {
 
     $user = Auth::user();
-    $wish = Wishlist::where('id',$req->Wishid)->first();
-    
+    $wish = Wishlist::where('id', $req->Wishid)->first();
+
     Session::put('Restore', [
       'wishid' =>  $wish->id,
     ]);
 
-   $wish->delete();
+    $wish->delete();
 
-   return redirect()->back()->with('success','Wish deleted successfully');
-
+    return redirect()->back()->with('success', 'Wish deleted successfully');
   }
 
-  public function restorewish($wishid){
+  public function restorewish($wishid)
+  {
     $data = Wishlist::withTrashed()->find($wishid);
     $data->restore();
     return redirect()->back()->with('success', 'The Wish Item Restored  Successfully!');
@@ -408,7 +534,7 @@ class HomeController extends Controller
     $cart->save();
     return redirect()->back()->with('message', 'Your Cart is Updated Successfully');
   }
-  
+
   // public function show_cart()
   // {
   //   if (Auth::id()) {
@@ -426,37 +552,36 @@ class HomeController extends Controller
   //   }
   // }
   public function show_cart()
-{
+  {
     if (Auth::id()) {
-        $user = Auth::user();
+      $user = Auth::user();
 
-        Cart::where('deleted_at', '<', Carbon::today())->forceDelete();
+      Cart::where('deleted_at', '<', Carbon::today())->forceDelete();
 
-        $data = Cart::where('user_id', $user->id)->get();
+      $data = Cart::where('user_id', $user->id)->get();
 
-        foreach ($data as $cartItem) {//notice that the get method get many model instance of this table so we can itterate over it 
-            if ($cartItem->updated_at <  Carbon::now()->subDays(30)) {
-                $product = Product::find($cartItem->product_id);
-                if ($product) {
-                    $product->increment('quantity', $cartItem->quantity);
-                }
-                $cartItem->forceDelete();
-            }
+      foreach ($data as $cartItem) { //notice that the get method get many model instance of this table so we can itterate over it 
+        if ($cartItem->updated_at <  Carbon::now()->subDays(30)) {
+          $product = Product::find($cartItem->product_id);
+          if ($product) {
+            $product->increment('quantity', $cartItem->quantity);
+          }
+          $cartItem->forceDelete();
         }
+      }
 
-        $data = Cart::where('user_id', $user->id)->get();
+      $data = Cart::where('user_id', $user->id)->get();
 
-        if ($data->isEmpty()) {
-            return view('home.showcart', ['messagen' => 'Your cart is empty!']);
-            
-        } else {
-            $total = Cart::where('user_id', $user->id)->sum('price');
-            return view('home.showcart', ['cartpro' => $data, 'total' => $total]);
-        }
+      if ($data->isEmpty()) {
+        return view('home.showcart', ['messagen' => 'Your cart is empty!']);
+      } else {
+        $total = Cart::where('user_id', $user->id)->sum('price');
+        return view('home.showcart', ['cartpro' => $data, 'total' => $total]);
+      }
     } else {
-        return redirect('login');
+      return redirect('login');
     }
-}
+  }
   public function show_order()
   {
     if (Auth::id()) {
@@ -470,30 +595,32 @@ class HomeController extends Controller
 
   public function deletecart($id)
   {
+    Cart::where('deleted_at', '<', today())->forceDelete();
+    
     $data = Cart::find($id);
-    $data->delete();//soft delete because SoftDelete included on Cart model data is not removed from the carts table and can be restored when needed
+    $data->delete(); //soft delete because SoftDelete included on Cart model data is not removed from the carts table and can be restored when needed
     // $data->forceDelete(); remove data permanently from carts table
     $product = Product::find($data->product_id);
-    $product->quantity = $product->quantity + $data->quantity;//inventory
+    $product->quantity = $product->quantity + $data->quantity; //inventory
     $product->save();
 
     Session::put('Restore', [
       'cartid' =>    $data->id,
-   ]);
-   
+    ]);
+
     return redirect()->back()->with('message', 'The Item Deleted From The Cart Successfully!');
   }
 
-  public function restorecart($id){
+  public function restorecart($id)
+  {
 
     $data = Cart::withTrashed()->find($id);
-    $data->restore();//soft delete because SoftDelete included on Cart model data is not removed from the carts table and can be restored when needed
+    $data->restore(); //soft delete because SoftDelete included on Cart model data is not removed from the carts table and can be restored when needed
     // $data->forceDelete(); remove data permanently from carts table
     $product = Product::find($data->product_id);
-    $product->quantity = $product->quantity - $data->quantity;//inventory
+    $product->quantity = $product->quantity - $data->quantity; //inventory
     $product->save();
     return redirect()->back()->with('message', 'The Item Restored  Successfully!');
-
   }
 
   public function deletecartao($userid)
@@ -549,24 +676,23 @@ class HomeController extends Controller
       'Ordernumber' =>   $Ordernumber,
       'button' => 'QR Code',
       'url' => 'https://github.com/',
-  ]);
+    ]);
 
-     Cart::where('user_id', $userid)->delete();
+    Cart::where('user_id', $userid)->delete();
 
     return redirect('/email');
-
   }
   public function print_pdf($id)
-    {
-     $order=Order::find($id);
-     $pdf= PDF::loadView('home.pdf',compact('order'));
-     return $pdf->download('order_detail.pdf');
-    }
+  {
+    $order = Order::find($id);
+    $pdf = PDF::loadView('home.pdf', compact('order'));
+    return $pdf->download('order_detail.pdf');
+  }
   public function stripe(Request $req)
   {
-    $total =$req->total;
+    $total = $req->total;
     $shipid = $req->shipid;
-    return view('home.stripe', compact('total','shipid'));
+    return view('home.stripe', compact('total', 'shipid'));
   }
   public function payoption($total)
   {
@@ -579,73 +705,137 @@ class HomeController extends Controller
   {
     $total = $req->total;
     $shipid = $req->shipid;
-    return view('home.chapapage', compact('total','shipid'));
+    return view('home.chapapage', compact('total', 'shipid'));
   }
 
+  // public function confirmchapapayment()
+  // {
+
+  //   $user = Auth::user();
+
+  //   $paymentParams = Session::get('payment_parameters');
+  //   $shipid = $paymentParams['shipid'];
+  //   Session::forget('payment_parameters');
+  //   $Ordernumber = mt_rand(1000000000, 9999999999);
+
+  //   //we  can get all information of the login user
+  //   $userid = $user->id;
+  //   $date = Carbon::today();
+  //   $data = Cart::where('user_id', $userid)->get();
+  //   $total = Cart::where('user_id', $user->id)->sum('price');
+  //   $totalquantity = Cart::where('user_id', $user->id)->sum('quantity');
+  //   $cart_products = [];
+  //   $cart_productid = [];
+  //   $cart_image = [];
+  //   $order = new Order();
+  //   $order->name = $data[0]->name;
+  //   $order->email = $data[0]->email;
+  //   $order->phone = $data[0]->phone;
+  //   $order->address = $data[0]->address;
+  //   $order->user_id = $data[0]->user_id;
+  //   $order->date = $date;
+  //   foreach ($data as $item) {
+  //     $cart_products[] = $item->product_title . ' (' . $item->quantity . ')';
+  //     $cart_productid[] = $item->product_id;
+  //     $cart_productquantity[] = $item->quantity;
+  //     $cart_image[] = $item->image;
+  //   }
+  //   $total_products = implode(', ', $cart_products);
+  //   $productsid = implode(', ', $cart_productid);
+  //   $productsquantity = implode(', ', $cart_productquantity);
+  //   $productimg = implode(', ', $cart_image);
+  //   $order->product_title = $total_products;
+  //   $order->eachquantity = $productsquantity;
+  //   $order->product_id = $productsid;
+  //   $order->quantity = $totalquantity;
+  //   $order->price = $total;
+  //   $order->image = $productimg;
+  //   $order->order_no = $Ordernumber;
+  //   $order->shipping_id = $shipid;
+  //   $order->payment_status = 'Paid';
+  //   $order->delivery_status = 'Processing';
+  //   $order->save();
+
+  //   Session::put('Orderdetail', [
+  //     'Ordernumber' =>   $Ordernumber,
+  //     'button' => 'QR Code',
+  //     'url' => 'https://github.com/',
+  //   ]);
+
+  //   Cart::where('user_id', $userid)->delete();
+
+  //   return redirect('/email');
+  // }
   public function confirmchapapayment()
-    {
-
+  {
       $user = Auth::user();
-
-    $paymentParams = Session::get('payment_parameters');
-    $shipid = $paymentParams['shipid'];
-    Session::forget('payment_parameters');
-    $Ordernumber = mt_rand(1000000000, 9999999999);
-
-           //we  can get all information of the login user
-    $userid = $user->id;
-    $date = Carbon::today();
-    $data = Cart::where('user_id', $userid)->get();
-    $total = Cart::where('user_id', $user->id)->sum('price');
-    $totalquantity = Cart::where('user_id', $user->id)->sum('quantity');
-    $cart_products=[];
-    $cart_productid=[];
-    $cart_image=[];
-    $order = new Order();
-    $order->name = $data[0]->name;
-    $order->email = $data[0]->email;
-    $order->phone = $data[0]->phone;
-    $order->address = $data[0]->address;
-    $order->user_id = $data[0]->user_id;
-    $order->date = $date;
-    foreach ($data as $item) {
-      $cart_products[] = $item->product_title . ' (' . $item->quantity . ')';
-      $cart_productid[] = $item->product_id;
-      $cart_productquantity[] = $item->quantity;
-      $cart_image[] = $item->image;
-  }
-    $total_products = implode(', ', $cart_products);
-    $productsid = implode(', ', $cart_productid);
-    $productsquantity = implode(', ', $cart_productquantity);
-    $productimg = implode(', ', $cart_image);
-    $order->product_title = $total_products;
-    $order->eachquantity = $productsquantity;
-    $order->product_id = $productsid;
-    $order->quantity = $totalquantity;
-    $order->price = $total;
-    $order->image = $productimg;
-    $order->order_no = $Ordernumber;
-    $order->shipping_id = $shipid;
-    $order->payment_status = 'Paid';
-    $order->delivery_status = 'Processing';
-    $order->save();
-
-    Session::put('Orderdetail', [
-      'Ordernumber' =>   $Ordernumber,
-      'button' => 'QR Code',
-      'url' => 'https://github.com/',
-  ]);
-
-     Cart::where('user_id', $userid)->delete();
-
-    return redirect('/email');
-
-    }
-    
   
+      $paymentParams = Session::get('payment_parameters');
+      $shipid = $paymentParams['shipid'];
+      Session::forget('payment_parameters');
+      $Ordernumber = mt_rand(1000000000, 9999999999);
+  
+      // Get user and order information
+      $userid = $user->id;
+      $date = Carbon::today();
+      $data = Cart::where('user_id', $userid)->get();
+      $total = Cart::where('user_id', $user->id)->sum('price');
+      $totalquantity = Cart::where('user_id', $user->id)->sum('quantity');
+      $cart_products = [];
+      $cart_productid = [];
+      $cart_image = [];
+  
+      // Create and save the order
+      $order = new Order();
+      $order->name = $data[0]->name;
+      $order->email = $data[0]->email;
+      $order->phone = $data[0]->phone;
+      $order->address = $data[0]->address;
+      $order->user_id = $data[0]->user_id;
+      $order->date = $date;
+      
+      foreach ($data as $item) {
+          $cart_products[] = $item->product_title . ' (' . $item->quantity . ')';
+          $cart_productid[] = $item->product_id;
+          $cart_productquantity[] = $item->quantity;
+          $cart_image[] = $item->image;
+  
+          // Update orderedQuantity in products table
+          $product = Product::find($item->product_id);
+          $product->orderQuantity += $item->quantity;
+          $product->save();
+      }
+      
+      $total_products = implode(', ', $cart_products);
+      $productsid = implode(', ', $cart_productid);
+      $productsquantity = implode(', ', $cart_productquantity);
+      $productimg = implode(', ', $cart_image);
+      $order->product_title = $total_products;
+      $order->eachquantity = $productsquantity;
+      $order->product_id = $productsid;
+      $order->quantity = $totalquantity;
+      $order->price = $total;
+      $order->image = $productimg;
+      $order->order_no = $Ordernumber;
+      $order->shipping_id = $shipid;
+      $order->payment_status = 'Paid';
+      $order->delivery_status = 'Processing';
+      $order->save();
+  
+      Session::put('Orderdetail', [
+          'Ordernumber' => $Ordernumber,
+          'button' => 'QR Code',
+          'url' => 'https://github.com/',
+      ]);
+  
+      Cart::where('user_id', $userid)->delete();
+  
+      return redirect('/email');
+  }
+
   public function stripePost(Request $request)
   {
- 
+
     $total = $request->total;
     $shipid = $request->shipid;
     try {
@@ -695,17 +885,16 @@ class HomeController extends Controller
       $order->payment_status = 'Paid';
       $order->delivery_status = 'Processing';
       $order->save();
-      
-    Session::put('Orderdetail', [
-      'Ordernumber' =>   $Ordernumber,
-      'button' => 'QR Code',
-      'url' => 'https://github.com/',
-  ]);
 
-     Cart::where('user_id', $userid)->delete();
+      Session::put('Orderdetail', [
+        'Ordernumber' =>   $Ordernumber,
+        'button' => 'QR Code',
+        'url' => 'https://github.com/',
+      ]);
 
-    return redirect('/email');
-    
+      Cart::where('user_id', $userid)->delete();
+
+      return redirect('/email');
     } catch (ApiConnectionException $exception) {
       // Stripe API connection exception
       return redirect()->back()->with('failed', 'No internet connection. Please check your network.');
@@ -718,108 +907,109 @@ class HomeController extends Controller
     }
   }
 
- public function checkout(){
+  public function checkout()
+  {
 
     $user = Auth::user();
-    $carts = Cart::where('user_id',$user->id)->get();
+    $carts = Cart::where('user_id', $user->id)->get();
     $total = Cart::where('user_id', $user->id)->sum('price');
-    return view('home.shipping', compact('carts','total'));
-}
+    return view('home.shipping', compact('carts', 'total'));
+  }
 
-public function shipping(Request $req){
-  
-  //unhandeled form resubmission issue
+  public function shipping(Request $req)
+  {
 
-  $validator = $req->validate([
-   'fname' => 'required|string|max:50',
-   'lname' => 'required|string|max:50',
-   'email' => 'required|email|max:100',
-   'phone' => 'required|string|max:10',
-   'phone2' => 'required|string|max:10',
-   'city' => 'required|string|max:50',
-   'town' => 'required|string|max:50',
-   'kebwor' => 'required|string|max:50',
-   'pobox' => 'required|string|max:50',
-   'Addaddress' => 'required|string|max:50',
-   'payment_option' => 'required|string|max:50',
-  ]);
+    //unhandeled form resubmission issue
+
+    $validator = $req->validate([
+      'fname' => 'required|string|max:50',
+      'lname' => 'required|string|max:50',
+      'email' => 'required|email|max:100',
+      'phone' => 'required|string|max:10',
+      'phone2' => 'required|string|max:10',
+      'city' => 'required|string|max:50',
+      'town' => 'required|string|max:50',
+      'kebwor' => 'required|string|max:50',
+      'pobox' => 'required|string|max:50',
+      'Addaddress' => 'required|string|max:50',
+      'payment_option' => 'required|string|max:50',
+    ]);
 
 
-  $total = $req->total;
+    $total = $req->total;
 
-  $shipping = new Shipping();
-  $shipping->first_name = $validator['fname'];
-  $shipping->last_name = $validator['lname'];
-  $shipping->email = $validator['email'];
-  $shipping->phone = $validator['phone'];
-  $shipping->phone2 = $validator['phone2'];
-  $shipping->city = $validator['city'];
-  $shipping->town = $validator['town'];
-  $shipping->kbl_wra = $validator['kebwor'];
-  $shipping->pobox = $validator['pobox'];
-  $shipping->add_address = $validator['Addaddress'];
-  $shipping->save();
-  $shipid = $shipping->id;
-  
+    $shipping = new Shipping();
+    $shipping->first_name = $validator['fname'];
+    $shipping->last_name = $validator['lname'];
+    $shipping->email = $validator['email'];
+    $shipping->phone = $validator['phone'];
+    $shipping->phone2 = $validator['phone2'];
+    $shipping->city = $validator['city'];
+    $shipping->town = $validator['town'];
+    $shipping->kbl_wra = $validator['kebwor'];
+    $shipping->pobox = $validator['pobox'];
+    $shipping->add_address = $validator['Addaddress'];
+    $shipping->save();
+    $shipid = $shipping->id;
 
-  if($validator['payment_option'] === 'Cash on delivery'){
-    $user = Auth::user();
-    $userid = $user->id;
-    $date = Carbon::today();
-    $Ordernumber = mt_rand(1000000000, 9999999999);
-    $data = Cart::where('user_id', $userid)->get();
-    $total = Cart::where('user_id', $user->id)->sum('price');
-    $totalquantity = Cart::where('user_id', $user->id)->sum('quantity');
-    $cart_products = [];
-    $cart_productid = [];
-    $cart_productquantity = [];
-    $cart_image = [];
-    $order = new Order();
-    $order->name = $data[0]->name;
-    $order->email = $data[0]->email;
-    $order->phone = $data[0]->phone;
-    $order->address = $data[0]->address;
-    $order->user_id = $data[0]->user_id;
-    $order->date = $date;
-    foreach ($data as $item) {
-      $cart_products[] = $item->product_title . ' (' . $item->quantity . ')';
-      $cart_productid[] = $item->product_id;
-      $cart_productquantity[] = $item->quantity;
-      $cart_image[] = $item->image;
+
+    if ($validator['payment_option'] === 'Cash on delivery') {
+      $user = Auth::user();
+      $userid = $user->id;
+      $date = Carbon::today();
+      $Ordernumber = mt_rand(1000000000, 9999999999);
+      $data = Cart::where('user_id', $userid)->get();
+      $total = Cart::where('user_id', $user->id)->sum('price');
+      $totalquantity = Cart::where('user_id', $user->id)->sum('quantity');
+      $cart_products = [];
+      $cart_productid = [];
+      $cart_productquantity = [];
+      $cart_image = [];
+      $order = new Order();
+      $order->name = $data[0]->name;
+      $order->email = $data[0]->email;
+      $order->phone = $data[0]->phone;
+      $order->address = $data[0]->address;
+      $order->user_id = $data[0]->user_id;
+      $order->date = $date;
+      foreach ($data as $item) {
+        $cart_products[] = $item->product_title . ' (' . $item->quantity . ')';
+        $cart_productid[] = $item->product_id;
+        $cart_productquantity[] = $item->quantity;
+        $cart_image[] = $item->image;
+      }
+      $total_products = implode(', ', $cart_products);
+      $productsid = implode(', ', $cart_productid);
+      $productsquantity = implode(', ', $cart_productquantity);
+      $productimg = implode(', ', $cart_image);
+      $order->product_title = $total_products;
+      $order->eachquantity = $productsquantity;
+      $order->product_id = $productsid;
+      $order->quantity = $totalquantity;
+      $order->price = $total;
+      $order->image = $productimg;
+      $order->order_no = $Ordernumber;
+      $order->shipping_id = $shipid;
+      $order->payment_status = 'Cash on delivery';
+      $order->delivery_status = 'Pending';
+      $order->save();
+
+      // $this->print_pdf($order->id);
+
+      Session::put('Orderdetail', [
+        'Ordernumber' =>   $Ordernumber,
+        'button' => 'QR Code',
+        'url' => 'https://github.com/',
+      ]);
+
+      Cart::where('user_id', $userid)->delete();
+
+      return redirect('/email');
+    } elseif ($req->payment_option === 'Card Payment') {
+      return view('home.Paymethods', compact('total', 'shipid'));
+      // return redirect()->route('payment.methods');
     }
-    $total_products = implode(', ', $cart_products);
-    $productsid = implode(', ', $cart_productid);
-    $productsquantity = implode(', ', $cart_productquantity);
-    $productimg = implode(', ', $cart_image);
-    $order->product_title = $total_products;
-    $order->eachquantity = $productsquantity;
-    $order->product_id = $productsid;
-    $order->quantity = $totalquantity;
-    $order->price = $total;
-    $order->image = $productimg;
-    $order->order_no = $Ordernumber;
-    $order->shipping_id = $shipid;
-    $order->payment_status = 'Cash on delivery';
-    $order->delivery_status = 'Pending';
-    $order->save();
-
-    // $this->print_pdf($order->id);
-
-    Session::put('Orderdetail', [
-      'Ordernumber' =>   $Ordernumber,
-      'button' => 'QR Code',
-      'url' => 'https://github.com/',
-  ]);
-
-     Cart::where('user_id', $userid)->delete();
-
-    return redirect('/email');
   }
-  elseif($req->payment_option === 'Card Payment'){
-    return view('home.Paymethods', compact('total','shipid'));
-    // return redirect()->route('payment.methods');
-  }
-}
 
   public function cancel_order($id)
   {
@@ -873,27 +1063,27 @@ public function shipping(Request $req){
   public function sell()
   {
     if (Auth::user()) {
-        $user = Auth::user();
-        if ($user->address == null && $user->address == null) {
-            return redirect('newl')->with('message', 'Let Us Finish Your Set Up First!!');
-        } else {
-            $thirtyDaysAgo = Carbon::now()->subDays(60)->format('Y-m-d');
-            $price = Order::where('user_id', $user->id)
-                ->whereDate('date', '>=', $thirtyDaysAgo)
-                ->sum('price');
+      $user = Auth::user();
+      if ($user->address == null && $user->address == null) {
+        return redirect('newl')->with('message', 'Let Us Finish Your Set Up First!!');
+      } else {
+        $thirtyDaysAgo = Carbon::now()->subDays(60)->format('Y-m-d');
+        $price = Order::where('user_id', $user->id)
+          ->whereDate('date', '>=', $thirtyDaysAgo)
+          ->sum('price');
 
-            if ($price < 5000) {
-                return redirect()->back()->with('sellinfo', 'To Sell your staffs you need a minimum transaction of 5000ETB for the last 2 months');
-            } else {
-                Session::put('infoseller', 'Please enter all required inputs and remember to put detailed description to attract more buyers for your items');
-                $category = Catagory::all();
-                return view('home.sell', ['category' => $category]);
-            }
+        if ($price < 5000) {
+          return redirect()->back()->with('sellinfo', 'To Sell your staffs you need a minimum transaction of 5000ETB for the last 2 months');
+        } else {
+          Session::put('infoseller', 'Please enter all required inputs and remember to put detailed description to attract more buyers for your items');
+          $category = Catagory::all();
+          return view('home.sell', ['category' => $category]);
         }
+      }
     } else {
-        return redirect('login');
+      return redirect('login');
     }
-}
+  }
 
   public function sellproduct(Request $req)
   {
@@ -941,7 +1131,7 @@ public function shipping(Request $req){
       if ($user->id != $order->user_id) {
         $details = [
           'greeting' => 'Hi How Are You',
-          'firstline' => 'I Am Gion E-commerse User And I Have Seen You Item On Gion WebSite',
+          'firstline' => 'I Am Gion E-Market User And I Have Seen You Item On Gion WebSite',
           'item' => 'Item name:' . " " . $order->title,
           'body' => $req->body,
           'lastline' => 'Please Respond on:' . " " . $user->email . " " . "or Use My Phone no:" . $user->phone . " " . 'As Much As Possible Good Buy',

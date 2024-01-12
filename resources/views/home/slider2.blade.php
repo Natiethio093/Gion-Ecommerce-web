@@ -58,7 +58,7 @@
                                     <h2 class="animated  fs-1 fw-bold">Sell Your Staff</h2>
                                     <h1 class="animated fw-900 text-7">Login and click SELL</h1>
                                     <p class="animated">You can be seller after predefined transaction.If verified you may receive email or sms from buyer</p>
-                                    <a class="animated btn btn-brush btn-brush-2" href="/sell"> SELL Now </a>
+                                    <a class="animated btn btn-brush btn-brush-2" href="/sell"> Sell Now </a>
 
                                 </div>
                             </div>

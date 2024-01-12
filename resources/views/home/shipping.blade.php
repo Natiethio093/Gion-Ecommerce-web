@@ -58,7 +58,7 @@
                                 <span class="span">@error('phone'){{$message}}@enderror</span>
                             </div>
                             <div class="form-group">
-                                <input  type="number" name="phone2" placeholder="Phone2 *(Optinal)">
+                                <input  type="number" name="phone2" placeholder="Phone2 (Optinal)">
                                 <span class="span">@error('phone2'){{$message}}@enderror</span>
                             </div>
                             <div class="form-group">
@@ -92,7 +92,7 @@
                                 <span class="span">@error('kebwor'){{$message}}@enderror</span>
                             </div>
                             <div class="form-group">
-                                <input  type="text" name="pobox" placeholder="Postcode / ZIP *(Optinal)">
+                                <input type="text" name="pobox" placeholder="Postcode / ZIP (Optinal)">
                                 <span class="span">@error('pobox'){{$message}}@enderror</span>
                             </div>
                             <div class="mb-20">

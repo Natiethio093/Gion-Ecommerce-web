@@ -18,13 +18,14 @@
                      <div class="heading_container heading_center">
                         <h3>Comments</h3>
                      </div>
-                     @if(session('message'))
+                     
+                     <!-- @if(session('message'))
                      <div class="alert alert-success" id="flash-message" role="alert">
                         {{ session('message') }}
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                            <span aria-hidden="true" onclick="removeFlashMessage()">X</span>
                      </div>
-                     @endif
+                     @endif -->
 
                      <form action="{{url('send_comment')}}" method="post">
                         @csrf

@@ -39,7 +39,7 @@ Route::post("/sendsms/{id}",[SmsController::class,'sendsms']);
 Route::get('auth/login', [RegisterController::class, 'googlepagelogin']);
 // Route::get('auth/google/signup/callback', [RegisterController::class, 'googlecallbacklogin'])->name('auth.google.signup.callback');
 Route::get('auth/google/callback', [RegisterController::class, 'googlecallbacklogin']);
-Route::post('auth/google', [RegisterController::class, 'googlepage']);
+// Route::post('auth/google', [RegisterController::class, 'googlepage']);
 Route::post('newlogin', [RegisterController::class, 'newlogin']);
 Route::get('newl', [RegisterController::class, 'newlogin2']);
 Route::post('regnew', [RegisterController::class, 'registerUser']);
@@ -75,7 +75,7 @@ Route::get('/deleteodrshp/{id}',[AdminController::class,'deleteodrshp'])->name('
 Route::post('/send_seller_email/{id}',[HomeController::class,'send_seller_email']);
 Route::get('product_details',[HomeController::class,'product_details'])->name('product_detail');
 Route::get('product_detail/{productId}',[HomeController::class,'product_detail']);
-Route::post('product_detailseller',[HomeController::class,'product_detailseller'])->name('product_detailseller');
+Route::get('product_detailseller',[HomeController::class,'product_detailseller'])->name('product_detailseller');
 Route::get('store',[HomeController::class,'store'])->name('store');
 Route::get('back',[HomeController::class,'back']);
 Route::post('add_cart',[HomeController::class,'add_cart'])->name('add_cart');

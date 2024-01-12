@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customersell;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Twilio\Rest\Client;
 use Twilio\Exceptions\RestException;
@@ -13,7 +15,7 @@ class SmsController extends Controller
     {
         $user = Auth::user();
         $message = $req->message;
-
+        $product = Customersell::find($id);
         if ($message) {
             $account_sid = getenv('TWILIO_SID');
             $auth_token = getenv('TWILIO_TOKEN');
@@ -22,10 +24,10 @@ class SmsController extends Controller
             try {
                 $client = new Client($account_sid, $auth_token);
                 $message = $client->messages->create(
-                    "+251 97 095 1608", // Recipient's phone number
+                    "+251 71 291 1008", // Recipient's phone number
                     [
                         'from' => $twilio_number,
-                        'body' => 'Sent From Gion Customer' . $user->phone . ' ' . $message . ' ' . 'Please Contact Me!!'
+                        'body' => 'Sent From Gion E-Market Customer'. '   '. $user->phone . '      ' . 'For Your Product' . '      '. $product->title .'    '. $message . '   ' . 'Please Contact Me!!'
                     ]
                 );
 

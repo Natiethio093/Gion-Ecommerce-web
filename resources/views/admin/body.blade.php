@@ -108,6 +108,7 @@
 
         </div>
       </div>
+     
       <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
         <div class="card">
           <div class="card-body">
@@ -171,13 +172,31 @@
 
         </div>
       </div>
+      <div class="row mb-5">
+        <div class="col-md-6">
+          <canvas id="revenueChart" class="mb-5"></canvas>
+        </div>
+        <div class="col-md-6">
+         <canvas id="revenueyearChart"></canvas>
+        </div>
+      </div>
+     <div class="row">
+      <div class="col-md-6">
+        <canvas id="categoryChart"></canvas>
+      </div>
+      <div class="col-md-6">
+        <canvas id="quantityChart"></canvas>
+      </div>
+     </div>
     </div>
+   </div>
+  </div> 
+ </div>
+</div>
+</div>
+  
+  
 
-  </div>
-</div>
-</div>
-</div>
-</div>
 </div>
 <!-- content-wrapper ends -->
 <!-- partial:partials/_footer.html -->
@@ -192,4 +211,135 @@
 <!-- main-panel ends -->
 </div>
 <!-- page-body-wrapper ends -->
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var revenueData = {!! json_encode($revenueData) !!};
+    var monthLabels = {!! json_encode($monthLabels) !!};
+    var yearLabels = {!! json_encode($yearLabels) !!};
+    var currentYear = {!! json_encode($currentYear) !!};
+    var previousYear = {!! json_encode($previousYear) !!};
+
+    var combinedLabels = monthLabels.map(function (month, index) {
+        if (yearLabels[index] === currentYear || yearLabels[index] === previousYear) {
+            return month + ' ' + yearLabels[index];
+        } else {
+          return month + ' ' + yearLabels[index];
+        }
+    });
+
+    var ctx = document.getElementById('revenueChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: combinedLabels,
+            datasets: [{
+                label: 'Two Year Time Month Revenues',
+                data: revenueData,
+                fill: false,
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+
+<script>
+    var revenueData = {!! json_encode($revenueDatayear) !!};
+    var yearLabels = {!! json_encode($yearLabelsyear) !!};
+
+    var ctx = document.getElementById('revenueyearChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: yearLabels,
+            datasets: [{
+                label: 'Total Year Revenues',
+                data: revenueData,
+                // fill: false,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+<script>
+        var productTitles = @json($producteachTitles);
+        var quantities = @json($quantitieseach);
+
+        var ctx = document.getElementById('quantityChart').getContext('2d');
+        var lineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: productTitles,
+                datasets: [{
+                    label: 'Ordered Quantity',
+                    data: quantities,
+                    borderColor: 'blue',
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+
+<script>
+    var categoryPercentages = {!! json_encode($categoryPercentages) !!};
+    var categoryNames = {!! json_encode($categoryNames) !!};
+
+    var ctx = document.getElementById('categoryChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: categoryNames,
+            datasets: [{
+                label: 'Category Percentage',
+                data: categoryPercentages,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.8)',
+                    'rgba(54, 162, 235, 0.8)',
+                    'rgba(255, 206, 86, 0.8)',
+                    'rgba(75, 192, 192, 0.8)',
+                    'rgba(153, 102, 255, 0.8)',
+                    'rgba(255, 159, 64, 0.8)',
+                    'rgba(255, 0, 0, 0.8)',
+                    'rgba(0, 255, 0, 0.8)',
+                    'rgba(0, 0, 255, 0.8)',
+                    'rgba(128, 128, 128, 0.8)',
+                    'rgba(255, 255, 0, 0.8)',
+                    'rgba(0, 255, 255, 0.8)'
+                    // Add more colors if needed
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+</script>
 </div>

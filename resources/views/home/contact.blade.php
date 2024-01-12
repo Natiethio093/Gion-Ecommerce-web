@@ -164,7 +164,7 @@
             <!-- Right side -->
             <div class=" paddings2 c-right" style="padding-top:10px">
                 <div class="image-container">
-                    <img src="images/img234.jpeg" class="" alt="none"/>
+                    <img src="{{asset('images/contact121.png')}}" class="" alt="none" style=""/>
                 </div>
             </div>
         </div>

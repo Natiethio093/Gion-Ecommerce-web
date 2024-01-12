@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+  <title>Add Product</title>
   <!-- Required meta tags -->
   @include('admin.css')
   <style>

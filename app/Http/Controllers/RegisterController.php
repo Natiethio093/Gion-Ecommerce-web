@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Exception;
 use Carbon\Carbon;
+use Psy\Readline\Hoa\Console;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 
 class RegisterController extends Controller
 {
@@ -65,12 +67,12 @@ class RegisterController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
-    public function googlecallbacklogin(Request $req)
+    public function googlecallbacklogin()
     {
         try {
             $this->user = Socialite::driver('google')->user();
-            $finduser = User::where('google_id', $this->user->id)->first();
-            // $finduser = User::where('email', $this->user->email)->first();
+            // $finduser = User::where('google_id', $this->user->id)->first();
+            $finduser = User::where('email', $this->user->email)->first();
             if ($finduser) {
                 Auth::login($finduser);
                 return redirect()->intended('redirect');
@@ -80,7 +82,7 @@ class RegisterController extends Controller
                     'email' => $this->user->email,
                     'password' =>  Hash::make('Abcdef'),
                     'google_id' => $this->user->id,
-                    'phone' => $this->user->phone,
+                    // 'phone' => $this->user->phone,
                     'usertype' => '0',
                 ]);
                 Auth::login($newuser);
