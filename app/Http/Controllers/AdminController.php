@@ -19,7 +19,8 @@ class AdminController extends Controller
 {
    public function view_catagory(){
       if(Auth::id()){
-         $data=Catagory::all();
+         // $data=Catagory::all();
+         $data = Catagory::orderBy('catagory_name', 'asc')->get();
          return view('admin.catagory',['catagory'=>$data]);
       }
       else{
@@ -162,9 +163,11 @@ class AdminController extends Controller
    }
    public function  EditPro($id){
       if(Auth::id()){
-      $product=Product::find($id);
-      $category=Catagory::all();
-      return view('admin.editpro',compact('product','category'));
+      $product = Product::find($id);
+      $category = Catagory::all();
+      $featuredproduct = Product::distinct('featured')->get('featured');
+      $productstatus = Product::distinct('product_status')->get('product_status');
+      return view('admin.editpro',compact('product', 'category', 'featuredproduct', 'productstatus'));
       }
       else{
          return redirect('login');
@@ -173,8 +176,9 @@ class AdminController extends Controller
    public function  Editcust($id){
       if(Auth::id()){
       $custpro=Customersell::find($id);
+      $custstatus = Customersell::distinct('status')->get('status');
       $category=Catagory::all();
-      return view('admin.editcustitem',compact('custpro','category'));
+      return view('admin.editcustitem',compact('custpro','category','custstatus'));
       }
       else{
          return redirect('login');
@@ -189,11 +193,13 @@ class AdminController extends Controller
          'price'=>'required|Integer|min:100',
          'quantity'=>'required|Integer|min:10',
          'catagory'=>'required|String',
+         'featured' => 'required|String',
       ]);
      $updpro=Product::find($id);
      $updpro->title=$validatepro['title'];
      $updpro->description=$validatepro['description'];
      $updpro->product_status=$validatepro['status'];
+     $updpro->featured=$validatepro['featured'];
      $updpro->price=$validatepro['price'];
      $updpro->discount_price=$req->dis_price;
      $updpro->quantity=$validatepro['quantity'];

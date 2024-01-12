@@ -2,40 +2,44 @@
 <html lang="en">
 
 <head>
-<meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <meta name="keywords" content="" />
-  <meta name="description" content="" />
-  <meta name="author" content="" />
-  <link rel="shortcut icon" href="{{asset('images/favicon2.png')}}" type="">
-  <title>About</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.6/dist/sweetalert2.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link rel="stylesheet" type="text/css" href="{{asset('home/css/bootstrap.css')}}" /><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link href="{{asset('css/font-awesome.min.css')}}" rel="stylesheet" />
-  <link href="{{asset('home/css/style.css')}}" rel="stylesheet" />
-  <link href="{{asset('home/css/responsive.css')}}" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link rel="shortcut icon" href="{{asset('images/favicon2.png')}}" type="">
+    <title>About</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.6/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" type="text/css" href="{{asset('home/css/bootstrap.css')}}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="{{asset('css/font-awesome.min.css')}}" rel="stylesheet" />
+    <link href="{{asset('home/css/style.css')}}" rel="stylesheet" />
+    <link href="{{asset('home/css/responsive.css')}}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <style>
         .toast-success {
             background-color: #094f07 !important;
             color: #fff !important;
-            opacity:1 !important;
+            opacity: 1 !important;
         }
 
         .toast-error {
             background-color: #b91515 !important;
             color: #fff !important;
-            opacity:1 !important;
+            opacity: 1 !important;
         }
 
         .toast-info {
             background-color: #0a617e !important;
             color: #fff !important;
-            opacity:1 !important;
+            opacity: 1 !important;
         }
+     .cardheight {
+        height: 100%;
+    }
     </style>
 </head>
 
@@ -78,103 +82,37 @@
     <!-- Featured Products Section -->
 
     <section class="featured-products py-5">
-        <div class="container">
-            <h2 class="text-center mb-4" style="font-size:30px;font-style:bold">Featured Products</h2>
-            <div id="productCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3500">
-                <div class="carousel-inner">
-                    <div class="carousel-item active">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <img src="/product/{{$product[24]->image}}" style="width:300px;height:300px" class="card-img-top pt-2" alt="Product 1">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Headset</h5>
-                                        <p class="card-text">Impressive sound quality With advanced features.</p>
-                                        <!-- <form action="{{route('product_detail')}}" method="get">
-                                            @csrf
-                                          <input type="hidden" name="productId" value="{$product[24]->id}}"/>
-                                          <button type="submit" class="btn btn-primary bg-primary text-white">Buy Now</a>
-                                         </form> -->
-                                        <a href="{{url('product_detail',$product[24]->id)}}" class="btn btn-primary">Buy Now</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <img src="/product/{{$product[21]->image}}" class="card-img-top pt-2" style="width:300px;height:300px" alt="Product 2">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Apple Watch</h5>
-                                        <p class="card-text">The Watch You Deserve.It suits to your occasions.</p>
-                                        <form action="{{route('product_detail')}}" method="get">
-                                            @csrf
-                                            <input type="hidden" name="productId" value="{{$product[21]->id}}" />
-                                            <button type="submit" class="btn btn-primary bg-primary text-white">Buy Now</a>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <img src="/product/{{$product[13]->image}}" class="card-img-top pt-2" style="width:300px;height:300px" alt="Product 3">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Apple Laptop</h5>
-                                        <p class="card-text">9th Generation 1TB Storage 16GB RAM,4GB With graph card.</p>
-                                        <form action="{{route('product_detail')}}" method="get">
-                                            @csrf
-                                            <input type="hidden" name="productId" value="{{$product[13]->id}}" />
-                                            <button type="submit" class="btn btn-primary bg-primary text-white">Buy Now</a>
-                                        </form>
-                                    </div>
+    <div class="container">
+        <h2 class="text-center mb-4" style="font-size:30px;font-weight:bold">Featured Products</h2>
+
+        <div id="productCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3500">
+            <div class="carousel-inner">
+                @foreach($product->chunk(4) as $chunk)
+                <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+                    <div class="row">
+                        @foreach($chunk as $prod)
+                        <div class="col-md-3">
+                            <div class="card h-100">
+                                <img src="/product/{{ $prod->image }}" style="max-width: 100%; max-height: 100%; object-fit: contain;" class="card-img-top pt-2" alt="Product">
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">{{ $prod->title }}</h5>
+                                    <p class="card-text flex-grow-1">{{ $prod->description }}</p>
+                                    <form action="{{ route('product_detail') }}" method="get" class="mt-auto">
+                                        @csrf
+                                        <input type="hidden" name="productId" value="{{ $prod->id }}" />
+                                        <button type="submit" class="btn btn-primary bg-primary text-white">Buy Now</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="carousel-item">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <img src="/product/{{$product[20]->image}}" class="card-img-top pt-2" style="width:300px;height:300px" alt="Product 3">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Apple Mobile</h5>
-                                        <p class="card-text">64GB Storage by 4GB RAM With Strong and durable Protectives.</p>
-                                        <form action="{{route('product_detail')}}" method="get">
-                                            @csrf
-                                            <input type="hidden" name="productId" value="{{$product[20]->id}}" />
-                                            <button type="submit" class="btn btn-primary bg-primary text-white">Buy Now</a>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <img src="{{asset('images/appleimac8.jpg')}}" class="card-img-top pt-2" style="width:300px;height:300px" alt="Product 3">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Apple Imac</h5>
-                                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                                        <a href="/full_product" class="btn btn-primary">Buy Now</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <img src="/product/{{$product[25]->image}}" class="card-img-top pt-2" style="width:300px;height:300px" alt="Product 3">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Air Pod</h5>
-                                        <p class="card-text">Impressive sound quality With advanced features.</p>
-                                        <form action="{{route('product_detail')}}" method="get">
-                                            @csrf
-                                            <input type="hidden" name="productId" value="{{$product[25]->id}}" />
-                                            <button type="submit" class="btn btn-primary bg-primary text-white">Buy Now</a>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
+                @endforeach
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- Footer -->
     @include('home.footer')

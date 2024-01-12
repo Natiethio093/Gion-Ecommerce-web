@@ -99,9 +99,20 @@
               <input class="input_col" type="text" name="description" placeholder="Enter Product Description" value="{{$custpro->description}}" /><br>
               <span class="span">@error('description'){{$message}}@enderror</span>
             </div>
-            <div class="div_design">
+            <!-- <div class="div_design">
               <label>Item Status:</label>
               <input class="input_col" type="text" name="status" placeholder="Enter Product Status" value="{{$custpro->status}}" /><br>
+              <span class="span">@error('status'){{$message}}@enderror</span>
+            </div> -->
+            <div class="div_design">
+              <label>Item Status:</label>
+              <select class="input_col" name="status">
+                @foreach($custstatus as $cust)
+                <option value="{{$cust->status}}" {{$custpro->status == $cust->status ? 'selected' : ''}}>
+                  {{$cust->status}}
+                </option>
+                @endforeach
+              </select><br>
               <span class="span">@error('status'){{$message}}@enderror</span>
             </div>
             <div class="div_design">

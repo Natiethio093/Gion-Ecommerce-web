@@ -19,12 +19,12 @@
 </head>
 
 <body>
-    <div class="container mb-3">
+    <!-- <div class="container mb-3">
         <h1 class="text-center">Featured Product</h1>
         <hr>
         <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2500">
             <div class="carousel-inner">
-                <!--Slide 1-->
+                Slide 1
                 <div class="carousel-item active">
                     <div class="row">
                         <div class="col-3">
@@ -41,8 +41,8 @@
                         </div>
                     </div>
                 </div>
-                <!--end of Slide 1-->
-                <!--Slide 2-->
+                end of Slide 1
+                Slide 2
                 <div class="carousel-item">
                     <div class="row">
                         <div class="col-3">
@@ -60,12 +60,38 @@
 
                     </div>
                 </div>
-                <!--end of Slide 2-->
+                end of Slide 2
 
             </div>
             
         </div>
+    </div> -->
+    <div class="container mb-3">
+    <h1 class="text-center">Featured Product</h1>
+    <hr>
+    <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2500">
+        <div class="carousel-inner">
+            @php
+                $count = 0;
+            @endphp
+            @foreach($featuredpro->chunk(4) as $chunk)
+                <div class="carousel-item {{ $count == 0 ? 'active' : '' }}">
+                    <div class="row">
+                        @foreach($chunk as $prod)
+                            <div class="col-3">
+                                <img src="{{ asset('product/' . $prod->image) }}" class="d-block w-100" alt="{{ $prod->title }}">
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                @php
+                    $count++;
+                @endphp
+            @endforeach
+        </div>
+        
     </div>
+</div>
 
     <!-- Optional JavaScript; choose one of the two! -->
 

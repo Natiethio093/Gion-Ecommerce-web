@@ -96,7 +96,7 @@
         <select class="form-control" name="ItemStatus">
           <option>Select Status</option>
           <option value="New">New</option>
-          <option value="slightlyused">Slightly Used</option>
+          <option value="Slightly Used">Slightly Used</option>
           <option value="Used">Used</option>
         </select>
         <span  style="color:red">@error('ItemStatus'){{$message}}@enderror</span>

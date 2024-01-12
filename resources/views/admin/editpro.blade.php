@@ -89,10 +89,7 @@
           <h1>Update product</h1>
           <form action="/updpro/{{$product->id}}" method="post" enctype="multipart/form-data">
             @csrf
-            <!-- <div class="div_design">
-              <input class="input_col" type="hidden" name="id" 
-              placeholder="Enter Product id" value="{{$product->id}}"/><br>
-            </div> -->
+
             <div class="div_design">
               <label>Product Title:</label>
               <input class="input_col" type="text" name="title" placeholder="Enter Product Title" value="{{$product->title}}" /><br>
@@ -105,9 +102,28 @@
             </div>
             <div class="div_design">
               <label>Product Status:</label>
-              <input class="input_col" type="text" name="status" placeholder="Enter Product Status" value="{{$product->product_status}}" /><br>
+              <select class="input_col" name="status">
+                @foreach($productstatus as $prostatus)
+                <option value="{{$prostatus->product_status}}" {{$product->product_status == $prostatus->product_status ? 'selected' : ''}}>
+                  {{$prostatus->product_status}}
+                </option>
+                @endforeach
+              </select><br>
               <span class="span">@error('status'){{$message}}@enderror</span>
             </div>
+
+            <div class="div_design">
+              <label>Featured:</label>
+              <select class="input_col" name="featured">
+                @foreach($featuredproduct as $fud)
+                <option value="{{$fud->featured}}" {{$product->featured == $fud->featured ? 'selected' : ''}}>
+                  {{$fud->featured}}
+                </option>
+                @endforeach
+              </select><br>
+              <span class="span">@error('featured'){{$message}}@enderror</span>
+            </div>
+            
             <div class="div_design">
               <label>Product Price:</label>
               <input class="input_col" type="number" name="price" placeholder="Enter Product Price" value="{{$product->price}}" /><br>
@@ -126,9 +142,10 @@
             <div class="div_design">
               <label>Product Catagory:</label>
               <select class="input_col" name="catagory">
-                <option value="{{$product->category}}" selected="">{{$product->category}}</option>
                 @foreach($category as $cat)
-                <option value="{{$cat->catagory_name}}">{{$cat->catagory_name}}</option>
+                <option value="{{$cat->catagory_name}}" {{$product->category == $cat->catagory_name ? 'selected' : ''}}>
+                  {{$cat->catagory_name}}
+                </option>
                 @endforeach
               </select><br>
               <span class="span">@error('catagory'){{$message}}@enderror</span>

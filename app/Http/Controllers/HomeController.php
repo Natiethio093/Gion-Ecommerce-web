@@ -32,7 +32,8 @@ class HomeController extends Controller
   public function index()
   {
     $product = Product::where('product_status', 'New')->where('quantity', '>', 0)->paginate(9);
-    return view('home.userpage', ['product' => $product]);
+    $productfeatured = Product::where('featured', 'yes')->get();
+    return view('home.userpage', ['product' => $product ,'featuredpro'=>$productfeatured]);
   }
 
   public function redirect()
@@ -169,7 +170,8 @@ $products = Product::select('title', 'orderQuantity')
 
     } else {
       $product = Product::where('quantity', '>', 0)->where('product_status', 'New')->paginate(9);
-      return view('home.userpage', ['product' => $product]);
+      $productfeatured = Product::where('featured', 'yes')->get();
+      return view('home.userpage', ['product' => $product ,'featuredpro'=>$productfeatured]);
     }
   }
 
@@ -654,7 +656,12 @@ $products = Product::select('title', 'orderQuantity')
       $cart_productid[] = $item->product_id;
       $cart_productquantity[] = $item->quantity;
       $cart_image[] = $item->image;
+
+      $product = Product::find($item->product_id);
+      $product->orderQuantity += $item->quantity;
+      $product->save();
     }
+
     $total_products = implode(', ', $cart_products);
     $productsid = implode(', ', $cart_productid);
     $productsquantity = implode(', ', $cart_productquantity);
@@ -1054,11 +1061,16 @@ $products = Product::select('title', 'orderQuantity')
   {
     return view('home.contact');
   }
+  // public function about()
+  // {
+  //   $product = Product::all();
+  //   return view('home.about', compact('product'));
+  // }
   public function about()
-  {
-    $product = Product::all();
+{
+    $product = Product::where('featured', 'yes')->get();
     return view('home.about', compact('product'));
-  }
+}
 
   public function sell()
   {

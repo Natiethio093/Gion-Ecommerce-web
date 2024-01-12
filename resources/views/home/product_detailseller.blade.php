@@ -90,7 +90,7 @@
                         </div>
                         @endif
                         <div class="img-box" style="padding:20px">
-                            <img src="/custemersell/{{$product->image}}" alt="">
+                            <img src="/custemersell/{{$product->image}}" alt="" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                         </div>
                         <div class="detail-box ">
                             <h5>
@@ -179,6 +179,33 @@
             "closeButton": true,
         }
         toastr.info("{{ Session::get('sellinfo') }}" ,'Information!' ,{timeOut:17000});
+    </script>
+       @elseif(Session::has('message'))
+    <script>
+        toastr.options = {
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "closeButton": true,
+        }
+        toastr.info("{{ Session::get('message') }}" ,'Information!' ,{timeOut:17000});
+    </script>
+       @elseif(Session::has('Failed'))
+    <script>
+        toastr.options = {
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "closeButton": true,
+        }
+        toastr.info("{{ Session::get('Failed') }}" ,'Information!' ,{timeOut:17000});
+    </script>
+       @elseif(Session::has('Noresult'))
+    <script>
+        toastr.options = {
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "closeButton": true,
+        }
+        toastr.info("{{ Session::get('Noresult') }}" ,'Information!' ,{timeOut:17000});
     </script>
    @endif
     <!-- jQery -->

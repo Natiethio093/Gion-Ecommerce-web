@@ -38,7 +38,6 @@
                                     <h1 class="animated fw-900 text-brand">On all products</h1>
                                     <p class="animated"> up to 10% off</p>
                                     <a class="animated btn btn-brush btn-brush-2" href="/full_product"> Shop Now </a>
-
                                 </div>
                             </div>
                             <div class="col-lg-7 col-md-6">
