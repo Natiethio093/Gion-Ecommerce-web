@@ -60,13 +60,12 @@
 
 <body>
    @include('home.header')
-   <div class="hero_area">
-      <div class="container">
 
+   <div class="hero_area d-flex align-items-center justify-content-center">
+      <div class="container">
          <div class="row justify-content-center">
             <div class="col-sm-4 col-md-8 col-lg-4">
-
-               <div class="" style="margin-top:70px;margin-bottom:10px;width:50%;padding:20px;width:400px;border:1px solid gray; box-shadow: 2px 3px 9px rgba(0, 0, 0, 0.5);">
+               <div class=" justify-content-center" style="margin-top:70px;margin-bottom:10px;width:50%;padding:20px;width:400px;border:1px solid gray; box-shadow: 2px 3px 9px rgba(0, 0, 0, 0.5);">
                   <div class="img-box" style="padding:20px">
                      <img src="{{asset('product/'. $product->image)}}" alt="" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                   </div>
@@ -103,44 +102,44 @@
                           @endif
                         @endfor
                      </div>
-                     <div class="row justify-content-center">
-                        <div class="col-md-5 col-sm-1">
-                           <form action="{{url('add_cartfull')}}" method="post">
-                              @csrf
-                              <div class="input-group">
-                                 <input type="hidden" name="productsId" value="{{$product->id}}" min="1">
-                                 <input type="number" name="quantity" class="form-control" min="1" value="1" style="width:50px;height:48px;" placeholder="Quantity" required>
-                                 <div class="input-group-append">
-                                    <button type="submit" class="btn btn-outline-primary"><i class="fa fa-shopping-cart" aria-hidden="true"></i></button>
+
+                     <div class="text-md-center d-flex justify-content-center">
+                           <div class="d-flex flex-md-row align-items-center mt-3">
+                              <form action="{{route('add_cartfull')}}" method="Post">
+                                 @csrf
+                                 <div class="input-group">
+                                    <input type="hidden" name="productsId" value="{{$product->id}}" min="1">
+                                    <input type="number" name="quantity" class="form-control" min="1" value="1" style="width: 150px; height: 48px;" placeholder="Quantity" required>
+                                    <div class="input-group-append">
+                                       <button type="" class="btn btn-outline-primary"><i class="fa fa-shopping-cart" aria-hidden="true"></i></button>
+                                    </div>
                                  </div>
-                              </div>
-                           </form>
+                              </form>
+                              <form action="{{route('add_wishlistfull')}}" method="Post">
+                                 @csrf
+                                 <input type="hidden" name="productsId" value="{{$product->id}}" min="1">
+                                 <button type="submit" class="btn btn-outline-dark ml-2" style="height:48px;"><i class="fa fa-heart" aria-hidden="true"></i></button>
+                              </form>
+                           </div>
                         </div>
-                        <div class="col-md-2 col-sm-1">
-                           <form action="{{url('add_wishlistfull')}}" method="Post">
-                              @csrf
-                              <input type="hidden" name="productsId" value="{{$product->id}}" min="1">
-                              <button type="submit" class="btn btn-outline-dark" style="height:48px;"><i class="fa fa-heart" aria-hidden="true"></i></button>
-                           </form>
-                        </div>
-                     </div>
-                     <div class="row justify-content-center mt-3">
-                        <div class="col-md-3">
+
+                        <div class="text-md-center d-flex justify-content-center">
+                           <div class="d-flex flex-md-row align-items-center mt-3">
                            <form action="{{route('store')}}">
                               <input type="hidden" name="productcategory" value="{{$product->category}}">
                               <button type="submit" class="btn btn-outline-success" style="margin-bottom:10px;">Store</button>
                            </form>
+                           <a href="{{url()->previous()}}" class="btn btn-outline-danger" style="margin-left: 10px; margin-bottom: 10px;">Back</a>
+                           </div>
                         </div>
-                        <div class="col-md-3">
-                           <a href="{{url()->previous()}}" class="btn btn-outline-danger" style="margin-bottom:10px;">Back</a>
-                        </div>
-                     </div>
                   </div>
                </div>
             </div>
          </div>
+
       </div>
    </div>
+   
       @include('home.footer')
       <!-- footer end -->
 

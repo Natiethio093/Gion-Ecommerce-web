@@ -17,26 +17,30 @@
       .options a {
          text-decoration: none;
       }
+
       .toast-success {
-       background-color:#094f07 !important; 
-       color: #fff !important;
-       opacity:1 !important;
-       }
-       .toast-error {
-       background-color:#b91515 !important; 
-       color: #fff !important;
-       opacity:1 !important;
-       }
-       .toast-info {
-       background-color:#0a617e !important; 
-       color: #fff !important; 
-       opacity:1 !important;
-       }
+         background-color: #094f07 !important;
+         color: #fff !important;
+         opacity: 1 !important;
+      }
+
+      .toast-error {
+         background-color: #b91515 !important;
+         color: #fff !important;
+         opacity: 1 !important;
+      }
+
+      .toast-info {
+         background-color: #0a617e !important;
+         color: #fff !important;
+         opacity: 1 !important;
+      }
    </style>
 
-    <?php
-      use Illuminate\Support\Facades\Session;
-    ?>
+   <?php
+
+   use Illuminate\Support\Facades\Session;
+   ?>
 
 </head>
 
@@ -48,7 +52,7 @@
                Our<span> New products</span>
             </h2>
          </div>
-        
+
          <div class="row">
             @foreach($product as $products)
             <div class="col-sm-6 col-md-4 col-lg-4">
@@ -57,27 +61,25 @@
                      <div class="options">
                         <form action="{{route('product_detail')}}" method="get">
                            @csrf
-                          <input type="hidden" name="productId" value="{{$products->id}}" min="1" >
-                          <button type="submit" class="option1 mb-3 p-2"  style="width:190px;border-radius:50px"> Product Detail</button>
+                           <input type="hidden" name="productId" value="{{$products->id}}" min="1">
+                           <button type="submit" class="option1 p-2" style="width:190px;border-radius:50px"> Product Detail</button>
                         </form>
-                        <div class="row justify-content-start">
-                           <div class="col-md-9 col-sm-12">
+                        <div class="text-md-center">
+                           <div class="d-flex flex-md-row align-items-center mt-3">
                               <form action="{{route('add_cart')}}" method="Post">
                                  @csrf
                                  <div class="input-group">
                                     <input type="hidden" name="productsId" value="{{$products->id}}" min="1">
-                                    <input type="number" name="quantity" class="form-control" min="1" value="1" style="width:50px;height:48px;" placeholder="Quantity" required>
+                                    <input type="number" name="quantity" class="form-control" min="1" value="1" style="width: 100px; height: 48px;"  required>
                                     <div class="input-group-append">
                                        <button type="" class="btn btn-outline-primary"><i class="fa fa-shopping-cart" aria-hidden="true"></i></button>
                                     </div>
                                  </div>
                               </form>
-                           </div>
-                           <div class="col-md-1 col-sm-12">
                               <form action="{{route('add_wishlist')}}" method="Post">
                                  @csrf
                                  <input type="hidden" name="productsId" value="{{$products->id}}" min="1">
-                                 <button type="submit" class="btn btn-outline-dark" style="height:48px;"><i class="fa fa-heart" aria-hidden="true"></i></button>
+                                 <button type="submit" class="btn btn-outline-dark ml-2" style="height:48px;"><i class="fa fa-heart" aria-hidden="true"></i></button>
                               </form>
                            </div>
                         </div>
@@ -92,20 +94,16 @@
                      </h5>
                      @if($products->discount_price!=null)
                      <h6 style="color:red">
-
                         {{$products->discount_price}}<span style="color:orange">ETB</span>
                      </h6>
                      <h6 style="color:blue ;text-decoration:line-through;">
-
                         {{$products->price}}<span style="color:orange">ETB</span>
                      </h6>
                      @else
                      <h6 style="color:blue">
-
                         {{$products->price}}<span style="color:orange">ETB</span>
                      </h6>
                      @endif
-
                   </div>
                </div>
             </div>
@@ -113,7 +111,6 @@
             <span style="padding-top:20px">
                {!!$product->withQueryString()->links('pagination::bootstrap-5')!!}
             </span>
-
          </div>
    </section>
 
@@ -124,42 +121,50 @@
    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
    @if(Session::has('success'))
-    <script>
-        toastr.options = {
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "closeButton": true,
-        }
-        toastr.success("{{ Session::get('success') }}" ,'Success!' ,{timeOut:8000});
-    </script>
+   <script>
+      toastr.options = {
+         "progressBar": true,
+         "positionClass": "toast-top-right",
+         "closeButton": true,
+      }
+      toastr.success("{{ Session::get('success') }}", 'Success!', {
+         timeOut: 8000
+      });
+   </script>
    @elseif(Session::has('failed'))
-    <script>
-        toastr.options = {
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "closeButton": true,
-        }
-        toastr.error("{{ Session::get('failed') }}" ,'Error!' ,{timeOut:20000});
-    </script>
+   <script>
+      toastr.options = {
+         "progressBar": true,
+         "positionClass": "toast-top-right",
+         "closeButton": true,
+      }
+      toastr.error("{{ Session::get('failed') }}", 'Error!', {
+         timeOut: 20000
+      });
+   </script>
    @elseif(Session::has('info'))
-    <script>
-        toastr.options = {
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "closeButton": true,
-        }
-        toastr.info("{{ Session::get('info') }}" ,'information!' ,{timeOut:8000});
-    </script>
+   <script>
+      toastr.options = {
+         "progressBar": true,
+         "positionClass": "toast-top-right",
+         "closeButton": true,
+      }
+      toastr.info("{{ Session::get('info') }}", 'information!', {
+         timeOut: 8000
+      });
+   </script>
    @elseif(Session::has('sellinfo'))
-    <script>
-        toastr.options = {
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "closeButton": true,
-        }
-        toastr.info("{{ Session::get('sellinfo') }}" ,'Information!' ,{timeOut:17000});
-    </script>
-  @endif
+   <script>
+      toastr.options = {
+         "progressBar": true,
+         "positionClass": "toast-top-right",
+         "closeButton": true,
+      }
+      toastr.info("{{ Session::get('sellinfo') }}", 'Information!', {
+         timeOut: 17000
+      });
+   </script>
+   @endif
 
 </body>
 

@@ -126,7 +126,7 @@ class RegisterController extends Controller
     }
     public function newlogin(Request $request){
         if ($request->Password !== $request->ConfirmPassword) {
-            return redirect()->back()->withErrors(['confirmpassword' => 'The password confirmation does not match.'])->withInput();
+            return redirect()->back()->withErrors(['confirmpassword' => 'The password confirmation does not match.'])->withInput()->with(['confirmpassword' , "The password confirmation does not match"]);
         }
         else{
           $validatedData = $request->validate([

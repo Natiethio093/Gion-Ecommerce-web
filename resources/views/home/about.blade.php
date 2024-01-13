@@ -84,17 +84,16 @@
     <section class="featured-products py-5">
     <div class="container">
         <h2 class="text-center mb-4" style="font-size:30px;font-weight:bold">Featured Products</h2>
-
         <div id="productCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3500">
             <div class="carousel-inner">
                 @foreach($product->chunk(4) as $chunk)
                 <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
                     <div class="row">
                         @foreach($chunk as $prod)
-                        <div class="col-md-3">
+                        <div class="col-lg-3 col-md-6 col-sm-12">
                             <div class="card h-100">
-                                <img src="/product/{{ $prod->image }}" style="max-width: 100%; max-height: 100%; object-fit: contain;" class="card-img-top pt-2" alt="Product">
-                                <div class="card-body d-flex flex-column">
+                                <img src="/product/{{ $prod->image }}" style="max-width: 100%; height: 300px; object-fit: contain;" class="card-img-top pt-2" alt="Product">
+                                <div class="card-body d-flex flex-column items-center">
                                     <h5 class="card-title">{{ $prod->title }}</h5>
                                     <p class="card-text flex-grow-1">{{ $prod->description }}</p>
                                     <form action="{{ route('product_detail') }}" method="get" class="mt-auto">
@@ -113,6 +112,8 @@
         </div>
     </div>
 </section>
+
+
 
     <!-- Footer -->
     @include('home.footer')
@@ -152,7 +153,7 @@
             "positionClass": "toast-top-right",
             "closeButton": true,
         }
-        toastr.info("{{ Session::get('info') }}", 'information!', {
+        toastr.info("{{ Session::get('info') }}", 'Information!', {
             timeOut: 8000
         });
     </script>

@@ -80,7 +80,9 @@
                         @foreach($chunk as $prod)
                             <div class="col-3">
                                 <img src="{{ asset('product/' . $prod->image) }}" class="d-block w-100" alt="{{ $prod->title }}">
+                               
                             </div>
+                            
                         @endforeach
                     </div>
                 </div>
@@ -89,7 +91,6 @@
                 @endphp
             @endforeach
         </div>
-        
     </div>
 </div>
 
