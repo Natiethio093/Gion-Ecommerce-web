@@ -29,38 +29,46 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
   <?php
-    use Illuminate\Support\Facades\Session;
+
+  use Illuminate\Support\Facades\Session;
   ?>
 
 </head>
+<style>
+  .bold-ticket {
+    font-weight: bold;
+  }
+  
+</style>
 
 <body>
 
-@if (Session::has('ordernumber'))
-<script>
-   swal({
-      title: "Gion Ecommerce",
+  @if (Session::has('ordernumber'))
+  <script>
+    swal({
+      title: "Gion E-Market",
       text: "{{ Session::get('paysuccess') }}\n\n Ticket reference number: {{ Session::get('ordernumber') }}",
+      // text: "{!! Session::get('paysuccess') !!}\n\n Ticket reference number:\n\n <span class='bold-ticket'>{{ Session::get('ordernumber') }}</span>\n\n Ticket reference number:\n\n <b>{{ Session::get('ordernumber') }}</b>",
       icon: "success",
       buttons: {
-         confirm: {
-            text: "OK",
-            value: true,
-            visible: true,
-            className: "btn btn-success",
-            closeModal: true
-         }
+        confirm: {
+          text: "OK",
+          value: true,
+          visible: true,
+          className: "btn btn-success",
+          closeModal: true
+        }
       },
       html: true
-   });
-</script>
-@endif
+    });
+  </script>
+  @endif
 
-      <?php
-         Session::forget('paysuccess');
+  <?php
+  Session::forget('paysuccess');
 
-         Session::forget('ordernumber');
-      ?>
+  Session::forget('ordernumber');
+  ?>
 
   <div class="hero_area">
     <!-- header section strats -->
@@ -69,7 +77,7 @@
     </div>
     <!-- end header section -->
     <!-- slider section -->
-      @include('home.slider2')
+    @include('home.slider2')
     <!-- end slider section -->
   </div>
   <!-- why section -->
@@ -99,11 +107,11 @@
 
   <!-- end subscribe section -->
   <!-- client section -->
-    @if(Route::has('login'))
-     @auth
-     @include('home.client')
-   @endauth
-    @endif
+  @if(Route::has('login'))
+  @auth
+  @include('home.client')
+  @endauth
+  @endif
   <!-- end client section -->
   <!-- footer start -->
   @include('home.footer')
@@ -111,70 +119,80 @@
   <!-- jQery -->
   <!-- jQery -->
 
-<script src="home/js/jquery-3.4.1.min.js"></script>
+  <script src="home/js/jquery-3.4.1.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js" integrity="sha512-WW8/jxkELe2CAiE4LvQfwm1rajOS8PHasCCx+knHG0gBHt8EXxS6T6tJRTGuDQVnluuAvMxWF4j8SNFDKceLFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js" integrity="sha512-WW8/jxkELe2CAiE4LvQfwm1rajOS8PHasCCx+knHG0gBHt8EXxS6T6tJRTGuDQVnluuAvMxWF4j8SNFDKceLFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-   @if(Session::has('success'))
-    <script>
-        toastr.options = {
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "closeButton": true,
-        }
-        toastr.success("{{ Session::get('success') }}" ,'Success!' ,{timeOut:10000});
-    </script>
-     @elseif(Session::has('message'))
-    <script>
-        toastr.options = {
-            "progressBar": true,
-            "positionClass": "toast-top-left",
-            "closeButton": true,
-        }
-        toastr.error("{{ Session::get('message') }}" ,'Success!' ,{timeOut:5000});
-    </script>
-   @elseif(Session::has('failed'))
-    <script>
-        toastr.options = {
-            "progressBar": true,
-            "positionClass": "toast-top-left",
-            "closeButton": true,
-        }
-        toastr.error("{{ Session::get('failed') }}" ,'Error!' ,{timeOut:17000});
-    </script>
-   @elseif(Session::has('info'))sellinfo
-    <script>
-        toastr.options = {
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "closeButton": true,
-        }
-        toastr.info("{{ Session::get('info') }}" ,'Information!' ,{timeOut:15000});
-    </script>
-     @elseif(Session::has('sellinfo'))
-    <script>
-        toastr.options = {
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "closeButton": true,
-        }
-        toastr.info("{{ Session::get('sellinfo') }}" ,'Information!' ,{timeOut:17000});
-    </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  @if(Session::has('success'))
+  <script>
+    toastr.options = {
+      "progressBar": true,
+      "positionClass": "toast-top-right",
+      "closeButton": true,
+    }
+    toastr.success("{{ Session::get('success') }}", 'Success!', {
+      timeOut: 10000
+    });
+  </script>
+  @elseif(Session::has('message'))
+  <script>
+    toastr.options = {
+      "progressBar": true,
+      "positionClass": "toast-top-left",
+      "closeButton": true,
+    }
+    toastr.error("{{ Session::get('message') }}", 'Success!', {
+      timeOut: 5000
+    });
+  </script>
+  @elseif(Session::has('failed'))
+  <script>
+    toastr.options = {
+      "progressBar": true,
+      "positionClass": "toast-top-left",
+      "closeButton": true,
+    }
+    toastr.error("{{ Session::get('failed') }}", 'Error!', {
+      timeOut: 17000
+    });
+  </script>
+  @elseif(Session::has('info'))sellinfo
+  <script>
+    toastr.options = {
+      "progressBar": true,
+      "positionClass": "toast-top-right",
+      "closeButton": true,
+    }
+    toastr.info("{{ Session::get('info') }}", 'Information!', {
+      timeOut: 15000
+    });
+  </script>
+  @elseif(Session::has('sellinfo'))
+  <script>
+    toastr.options = {
+      "progressBar": true,
+      "positionClass": "toast-top-right",
+      "closeButton": true,
+    }
+    toastr.info("{{ Session::get('sellinfo') }}", 'Information!', {
+      timeOut: 17000
+    });
+  </script>
   @endif
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js" integrity="sha512-WW8/jxkELe2CAiE4LvQfwm1rajOS8PHasCCx+knHG0gBHt8EXxS6T6tJRTGuDQVnluuAvMxWF4j8SNFDKceLFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js" integrity="sha512-WW8/jxkELe2CAiE4LvQfwm1rajOS8PHasCCx+knHG0gBHt8EXxS6T6tJRTGuDQVnluuAvMxWF4j8SNFDKceLFg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-    <script src="{{ asset('home/js/app.js') }}"></script>
-    <!-- popper js -->
-    <script src="{{asset('home/js/popper.min.js')}}"></script>
-    <!-- bootstrap js -->
-    <script src="{{asset('home/js/bootstrap.js')}}"></script>
-    <!-- custom js -->
-    <script src="{{asset('home/js/custom.js')}}"></script>
+  <script src="{{ asset('home/js/app.js') }}"></script>
+  <!-- popper js -->
+  <script src="{{asset('home/js/popper.min.js')}}"></script>
+  <!-- bootstrap js -->
+  <script src="{{asset('home/js/bootstrap.js')}}"></script>
+  <!-- custom js -->
+  <script src="{{asset('home/js/custom.js')}}"></script>
 </body>
 
 </html>

@@ -113,7 +113,7 @@
           <div class="row justify-content-center">
             <div class="col-md-8">
               <div class="card bg-dark text-light mb-4">
-              <h1 class="text-center fs-1">All Customer Products</h1>
+              <h1 class="text-center fs-1">All Sellers Products</h1>
                 <div class="card-body d-flex align-items-center justify-content-center">
                 <form action="{{url('searchcustpro')}}" method="get" class="ml-3">
                     @csrf
@@ -184,7 +184,7 @@
                <!-- <a class="close btn btn-danger btn-sm h-2" data-dismiss="modal" aria-label="Close">X</a> -->
               </div>
               <div class="modal-body text-center">
-                <p>Are you sure you want to delete this Customer Item?</p>
+                <p>Are you sure you want to delete this Seller Item?</p>
               </div>
               <div class="modal-footer">
               <a style="color: white;" class="btn btn-success" data-dismiss="modal">Close</a>

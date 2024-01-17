@@ -66,7 +66,7 @@
                         <span class="menu-icon">
                             <i class="mdi mdi-watch"></i>
                         </span>
-                        <span class="menu-title">Customer's Item's</span>
+                        <span class="menu-title">Seller Item's</span>
                     </a>
                 </li>
                 <li class="nav-item menu-items">

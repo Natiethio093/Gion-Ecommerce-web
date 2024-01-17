@@ -30,19 +30,16 @@ class RegisterController extends Controller
             $passwordConfirmation = $registrationData['password_confirmation'];
 
             if ($password !== $passwordConfirmation) {
-                // Passwords do not match, terminate the registration process
                 return redirect()->route('register')->with(['message' => 'Password Confirmation Do Not Match']);
             }
 
             $finduser = User::where('google_id', $this->user->id)->first();
-            // $finduser = User::where('email', $user->email)->first();
             if ($finduser) {
-                // Auth::login($finduser);
+                
                 return redirect()->route('register')->with('message', 'User Already Registered');
             } else {
                 $newUser = User::create([
                     'name' =>  $registrationData['name'],
-                    // 'lastname' =>  $registrationData['lastname'],
                     'email' => $this->user->email,
                     'google_id' => $this->user->id,
                     'phone' => $registrationData['phone'],
@@ -71,7 +68,6 @@ class RegisterController extends Controller
     {
         try {
             $this->user = Socialite::driver('google')->user();
-            // $finduser = User::where('google_id', $this->user->id)->first();
             $finduser = User::where('email', $this->user->email)->first();
             if ($finduser) {
                 Auth::login($finduser);
@@ -80,9 +76,8 @@ class RegisterController extends Controller
                   $newuser = User::create([
                     'name' =>  $this->user->name,
                     'email' => $this->user->email,
-                    'password' =>  Hash::make('Abcdef'),
+                    'password' =>  Hash::make('12345678'),
                     'google_id' => $this->user->id,
-                    // 'phone' => $this->user->phone,
                     'usertype' => '0',
                 ]);
                 Auth::login($newuser);
@@ -124,6 +119,7 @@ class RegisterController extends Controller
         Auth::login($newuser);
         return redirect()->intended('redirect');
     }
+    
     public function newlogin(Request $request){
         if ($request->Password !== $request->ConfirmPassword) {
             return redirect()->back()->withErrors(['confirmpassword' => 'The password confirmation does not match.'])->withInput()->with(['confirmpassword' , "The password confirmation does not match"]);

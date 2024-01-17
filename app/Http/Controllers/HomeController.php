@@ -32,8 +32,8 @@ class HomeController extends Controller
   public function index()
   {
     $product = Product::where('product_status', 'New')->where('quantity', '>', 0)->paginate(9);
-    $productfeatured = Product::where('featured', 'yes')->get();
-    return view('home.userpage', ['product' => $product ,'featuredpro'=>$productfeatured]);
+    $featuredpro = Product::where('featured', 'yes')->get();
+    return view('home.userpage', compact('product', 'featuredpro'));
   }
 
   public function redirect()
@@ -49,10 +49,10 @@ class HomeController extends Controller
       $fiftenYearsAgo =  $currentYear - 15;
 
       $revenues = Order::selectRaw('SUM(price) as revenue, YEAR(created_at) as year, MONTH(created_at) as month')
-      ->where('payment_status', 'Paid')
-      ->whereYear('created_at', '>=', $twoYearsAgo)
-      ->groupBy('year', 'month')
-      ->get();
+        ->where('payment_status', 'Paid')
+        ->whereYear('created_at', '>=', $twoYearsAgo)
+        ->groupBy('year', 'month')
+        ->get();
 
       $revenueData = [];
       $monthLabels = [];
@@ -63,7 +63,7 @@ class HomeController extends Controller
         $monthLabels[] = date('F', mktime(0, 0, 0, $revenue->month, 1,));
         $yearLabels[] = date('Y', mktime(0, 0, 0, 1, 1, $revenue->year));
       }
-      
+
       $revenuesyear = Order::selectRaw('SUM(price) as revenue, YEAR(created_at) as year')
         ->where('payment_status', 'Paid')
         ->whereYear('created_at', '>=', $fiftenYearsAgo)
@@ -78,60 +78,60 @@ class HomeController extends Controller
         $yearLabelsyear[] = $revenueyear->year;
       }
       $orderItems = Order::select('product_id', 'product_title', 'eachquantity')
-      ->where('payment_status', 'Paid')
-      ->get();
+        ->where('payment_status', 'Paid')
+        ->get();
 
-  $quantityData = [];
-  $productTitles = [];
+      $quantityData = [];
+      $productTitles = [];
 
-  foreach ($orderItems as $item) {
-      $productIds = explode(',', $item->product_id);
-      $productTitles = explode(',', $item->product_title);
-      $quantities = explode(',', $item->eachquantity);
+      foreach ($orderItems as $item) {
+        $productIds = explode(',', $item->product_id);
+        $productTitles = explode(',', $item->product_title);
+        $quantities = explode(',', $item->eachquantity);
 
-      foreach ($productIds as $key => $productId) {
+        foreach ($productIds as $key => $productId) {
           $quantity = (int)$quantities[$key];
 
           $productKey = $productId . '_' . $productTitles[$key];
 
           if (!isset($quantityData[$productKey])) {
-              $quantityData[$productKey] = $quantity;
+            $quantityData[$productKey] = $quantity;
           } else {
-              $quantityData[$productKey] += $quantity;
+            $quantityData[$productKey] += $quantity;
           }
 
           if (!in_array($productTitles[$key], $productTitles)) {
-              $productTitles[] = $productTitles[$key];
+            $productTitles[] = $productTitles[$key];
           }
+        }
       }
-  }
 
-  $orderedQuantities = array_values($quantityData);
-  $productTitles = array_values($productTitles);
+      $orderedQuantities = array_values($quantityData);
+      $productTitles = array_values($productTitles);
 
-  $categoryCounts = Product::select('category', DB::raw('SUM(quantity) as total_quantity'))
-  ->groupBy('category')
-  ->get();
-
-$categoryPercentages = [];
-$categoryNames = [];
-
-$totalQuantity = $categoryCounts->sum('total_quantity');
-
-foreach ($categoryCounts as $categoryCount) {
-  $categoryName = $categoryCount->category;
-  $quantity = $categoryCount->total_quantity;
-
-  $percentage = ($quantity / $totalQuantity) * 100;
-
-  $categoryPercentages[] = $percentage;
-  $categoryNames[] = $categoryName;
-}
-$products = Product::select('title', 'orderQuantity')
+      $categoryCounts = Product::select('category', DB::raw('SUM(quantity) as total_quantity'))
+        ->groupBy('category')
         ->get();
 
-    $producteachTitles = $products->pluck('title')->toArray();
-    $quantitieseach = $products->pluck('orderQuantity')->toArray();
+      $categoryPercentages = [];
+      $categoryNames = [];
+
+      $totalQuantity = $categoryCounts->sum('total_quantity');
+
+      foreach ($categoryCounts as $categoryCount) {
+        $categoryName = $categoryCount->category;
+        $quantity = $categoryCount->total_quantity;
+
+        $percentage = ($quantity / $totalQuantity) * 100;
+
+        $categoryPercentages[] = $percentage;
+        $categoryNames[] = $categoryName;
+      }
+      $products = Product::select('title', 'orderQuantity')
+        ->get();
+
+      $producteachTitles = $products->pluck('title')->toArray();
+      $quantitieseach = $products->pluck('orderQuantity')->toArray();
 
       $product = Product::count();
       $order = Order::count();
@@ -140,38 +140,37 @@ $products = Product::select('title', 'orderQuantity')
       $revenue = Order::where('payment_status', 'Paid')->sum('price');
       $deliverd = Order::where('delivery_status', 'Delivered')->count();
       $comment = Comment::count();
-      $processing = Order::where('delivery_status' , 'Pending')
-      ->orWhere('delivery_status', 'Processing')
-      ->count();
+      $processing = Order::where('delivery_status', 'Pending')
+        ->orWhere('delivery_status', 'Processing')
+        ->count();
 
       return view('admin.home', compact(
-      'product', 
-      'order', 
-      'customer', 
-      'admin', 
-      'revenue', 
-      'deliverd', 
-      'processing', 
-      'comment', 
-      'revenueData', 
-      'monthLabels', 
-      'yearLabels', 
-      'currentYear', 
-      'previousYear',
-      'revenueDatayear',
-      'yearLabelsyear',
-      'orderedQuantities',
-      'productTitles',
-      'categoryPercentages',
-      'categoryNames',
-      'producteachTitles',
-      'quantitieseach'
-    ));
-
+        'product',
+        'order',
+        'customer',
+        'admin',
+        'revenue',
+        'deliverd',
+        'processing',
+        'comment',
+        'revenueData',
+        'monthLabels',
+        'yearLabels',
+        'currentYear',
+        'previousYear',
+        'revenueDatayear',
+        'yearLabelsyear',
+        'orderedQuantities',
+        'productTitles',
+        'categoryPercentages',
+        'categoryNames',
+        'producteachTitles',
+        'quantitieseach'
+      ));
     } else {
       $product = Product::where('quantity', '>', 0)->where('product_status', 'New')->paginate(9);
       $productfeatured = Product::where('featured', 'yes')->get();
-      return view('home.userpage', ['product' => $product ,'featuredpro'=>$productfeatured]);
+      return view('home.userpage', ['product' => $product, 'featuredpro' => $productfeatured]);
     }
   }
 
@@ -251,25 +250,20 @@ $products = Product::select('title', 'orderQuantity')
     $id = $req->productId;
     $product = Product::find($id);
 
-    if($product->orderQuantity > 35){
+    if ($product->orderQuantity > 35) {
       $star = 5;
-    }
-    else if($product->orderQuantity <= 35 && $product->orderQuantity > 15){
+    } else if ($product->orderQuantity <= 35 && $product->orderQuantity > 15) {
       $star = 4;
-    }
-    else if($product->orderQuantity <= 15 && $product->orderQuantity > 5){
+    } else if ($product->orderQuantity <= 15 && $product->orderQuantity > 5) {
       $star = 3;
-    }
-    else if($product->orderQuantity <= 5 && $product->orderQuantity > 3){
+    } else if ($product->orderQuantity <= 5 && $product->orderQuantity > 3) {
       $star = 2;
-    }
-    else if($product->orderQuantity <= 3 && $product->orderQuantity > 1){
+    } else if ($product->orderQuantity <= 3 && $product->orderQuantity > 1) {
       $star = 1;
-    }
-    else {
+    } else {
       $star = 0;
     }
-    return view('home.product_details', ['product' => $product,'star' => $star]);
+    return view('home.product_details', ['product' => $product, 'star' => $star]);
   }
 
   public function product_detail($productId)
@@ -598,7 +592,7 @@ $products = Product::select('title', 'orderQuantity')
   public function deletecart($id)
   {
     Cart::where('deleted_at', '<', today())->forceDelete();
-    
+
     $data = Cart::find($id);
     $data->delete(); //soft delete because SoftDelete included on Cart model data is not removed from the carts table and can be restored when needed
     // $data->forceDelete(); remove data permanently from carts table
@@ -775,69 +769,87 @@ $products = Product::select('title', 'orderQuantity')
   // }
   public function confirmchapapayment()
   {
-      $user = Auth::user();
-  
-      $paymentParams = Session::get('payment_parameters');
-      $shipid = $paymentParams['shipid'];
-      Session::forget('payment_parameters');
-      $Ordernumber = mt_rand(1000000000, 9999999999);
-  
-      // Get user and order information
-      $userid = $user->id;
-      $date = Carbon::today();
-      $data = Cart::where('user_id', $userid)->get();
-      $total = Cart::where('user_id', $user->id)->sum('price');
-      $totalquantity = Cart::where('user_id', $user->id)->sum('quantity');
-      $cart_products = [];
-      $cart_productid = [];
-      $cart_image = [];
-  
-      // Create and save the order
-      $order = new Order();
-      $order->name = $data[0]->name;
-      $order->email = $data[0]->email;
-      $order->phone = $data[0]->phone;
-      $order->address = $data[0]->address;
-      $order->user_id = $data[0]->user_id;
-      $order->date = $date;
-      
-      foreach ($data as $item) {
-          $cart_products[] = $item->product_title . ' (' . $item->quantity . ')';
-          $cart_productid[] = $item->product_id;
-          $cart_productquantity[] = $item->quantity;
-          $cart_image[] = $item->image;
-  
-          // Update orderedQuantity in products table
-          $product = Product::find($item->product_id);
-          $product->orderQuantity += $item->quantity;
-          $product->save();
-      }
-      
-      $total_products = implode(', ', $cart_products);
-      $productsid = implode(', ', $cart_productid);
-      $productsquantity = implode(', ', $cart_productquantity);
-      $productimg = implode(', ', $cart_image);
-      $order->product_title = $total_products;
-      $order->eachquantity = $productsquantity;
-      $order->product_id = $productsid;
-      $order->quantity = $totalquantity;
-      $order->price = $total;
-      $order->image = $productimg;
-      $order->order_no = $Ordernumber;
-      $order->shipping_id = $shipid;
-      $order->payment_status = 'Paid';
-      $order->delivery_status = 'Processing';
-      $order->save();
-  
-      Session::put('Orderdetail', [
-          'Ordernumber' => $Ordernumber,
-          'button' => 'QR Code',
-          'url' => 'https://github.com/',
-      ]);
-  
-      Cart::where('user_id', $userid)->delete();
-  
-      return redirect('/email');
+    $user = Auth::user();
+
+    $paymentParams = Session::get('payment_parameters');
+    $shipid = $paymentParams['shipid'];
+    Session::forget('payment_parameters');
+
+    $Ordernumber = $this->generateUniqueOrderNumber();
+
+    // $Ordernumber = mt_rand(1000000000, 9999999999);
+
+    // Get user and order information
+    $userid = $user->id;
+    $date = Carbon::today();
+    $data = Cart::where('user_id', $userid)->get();
+    $total = Cart::where('user_id', $user->id)->sum('price');
+    $totalquantity = Cart::where('user_id', $user->id)->sum('quantity');
+    $cart_products = [];
+    $cart_productid = [];
+    $cart_image = [];
+
+    // Create and save the order
+    $order = new Order();
+    $order->name = $data[0]->name;
+    $order->email = $data[0]->email;
+    $order->phone = $data[0]->phone;
+    $order->address = $data[0]->address;
+    $order->user_id = $data[0]->user_id;
+    $order->date = $date;
+
+    foreach ($data as $item) {
+      $cart_products[] = $item->product_title . ' (' . $item->quantity . ')';
+      $cart_productid[] = $item->product_id;
+      $cart_productquantity[] = $item->quantity;
+      $cart_image[] = $item->image;
+
+      // Update orderedQuantity in products table
+      $product = Product::find($item->product_id);
+      $product->orderQuantity += $item->quantity;
+      $product->save();
+    }
+
+    $total_products = implode(', ', $cart_products);
+    $productsid = implode(', ', $cart_productid);
+    $productsquantity = implode(', ', $cart_productquantity);
+    $productimg = implode(', ', $cart_image);
+    $order->product_title = $total_products;
+    $order->eachquantity = $productsquantity;
+    $order->product_id = $productsid;
+    $order->quantity = $totalquantity;
+    $order->price = $total;
+    $order->image = $productimg;
+    $order->order_no = $Ordernumber;
+    $order->shipping_id = $shipid;
+    $order->payment_status = 'Paid';
+    $order->delivery_status = 'Processing';
+    $order->save();
+
+    Session::put('Orderdetail', [
+      'Ordernumber' => $Ordernumber,
+      'button' => 'QR Code',
+      'url' => 'https://github.com/',
+    ]);
+
+    Cart::where('user_id', $userid)->delete();
+
+    return redirect('/email');
+  }
+
+  private function generateUniqueOrderNumber()
+  {
+    $Ordernumber = mt_rand(1000000000, 9999999999);
+
+    // Check if the generated order number already exists in the orders table
+    $exists = Order::where('order_no', $Ordernumber)->exists();
+
+    // If the order number already exists, generate a new one recursively
+    if ($exists) {
+      return $this->generateUniqueOrderNumber();
+    }
+
+    return $Ordernumber;
   }
 
   public function stripePost(Request $request)
@@ -854,7 +866,9 @@ $products = Product::select('title', 'orderQuantity')
         "source" => $request->stripeToken,
         "description" => "Thanks For Payment"
       ]);
-      $Ordernumber = mt_rand(1000000000, 9999999999);
+      // $Ordernumber = mt_rand(1000000000, 9999999999);
+      $Ordernumber = $this->generateUniqueOrderNumber();
+      
       $user = Auth::user(); //we  can get all information of the login user
       $userid = $user->id;
       $date = Carbon::today();
@@ -1022,11 +1036,9 @@ $products = Product::select('title', 'orderQuantity')
   {
     $order = Order::find($id);
     $productIDs = ltrim($order->product_id, ',');
-    // Get the product IDs and quantities from the canceled order
     $productIDs = explode(', ', $order->product_id);
     $quantities = explode(', ', $order->eachquantity);
 
-    // Update the quantities in the products table
     foreach ($productIDs as $key => $productID) {
       $product = Product::find($productID);
       if ($product) {
@@ -1067,10 +1079,10 @@ $products = Product::select('title', 'orderQuantity')
   //   return view('home.about', compact('product'));
   // }
   public function about()
-{
+  {
     $product = Product::where('featured', 'yes')->get();
     return view('home.about', compact('product'));
-}
+  }
 
   public function sell()
   {

@@ -110,7 +110,7 @@
                         </form>
                         <div class="text-md-center">
                            <div class="d-flex flex-md-row align-items-center mt-3">
-                              <form action="{{route('add_cart')}}" method="Post">
+                              <form action="{{route('add_cartfull')}}" method="Post">
                                  @csrf
                                  <div class="input-group">
                                     <input type="hidden" name="productsId" value="{{$products->id}}" min="1">
