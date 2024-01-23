@@ -1120,6 +1120,7 @@ class HomeController extends Controller
       'ItemStatus' => 'required|String',
       'ItemPhoto' => 'required',
       'ItemCategory' => 'required|String',
+      'optionalPhone' => 'nullable|digits:10',//optinal field can be left null
     ]);
     $cuspro = new Customersell();
     $cuspro->name = $user->name;

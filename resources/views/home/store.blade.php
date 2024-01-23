@@ -46,13 +46,13 @@
                   Our <span>Store</span>
                </h2>
             </div>
-            @if(session('success'))
+            <!-- @if(session('success'))
             <div class="alert alert-success" id="flash-message" role="alert" style="text-align:center">
                {{ session('success') }}
                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                   <span aria-hidden="true" onclick="removeFlashMessage()">X</span>
             </div>
-            @endif
+            @endif -->
             <div class="row">
                @foreach($product as $products)
                <div class="col-sm-6 col-md-4 col-lg-4">
@@ -61,32 +61,30 @@
                      <div class="options">
                         <form action="{{route('product_detail')}}" method="get">
                            @csrf
-                          <input type="hidden" name="productId" value="{{$products->id}}" min="1" >
-                          <button type="submit" class="option1 mb-3 p-2"  style="width:190px;border-radius:50px"> Product Detail</button>
+                           <input type="hidden" name="productId" value="{{$products->id}}" min="1">
+                           <button type="submit" class="option1  p-2" style="width:190px;border-radius:50px"> Product Detail</button>
                         </form>
-                        <div class="row justify-content-start">
-                           <div class="col-md-9 col-sm-12">
-                              <form action="{{route('add_cart')}}" method="Post">
+                        <div class="text-md-center">
+                           <div class="d-flex flex-md-row align-items-center mt-3">
+                              <form action="{{route('add_cartfull')}}" method="Post">
                                  @csrf
                                  <div class="input-group">
                                     <input type="hidden" name="productsId" value="{{$products->id}}" min="1">
-                                    <input type="number" name="quantity" class="form-control" min="1" value="1" style="width:50px;height:48px;" placeholder="Quantity" required>
+                                    <input type="number" name="quantity" class="form-control" min="1" value="1" style="width: 100px; height: 48px;"  required>
                                     <div class="input-group-append">
-                                       <button type="submit" class="btn btn-outline-primary "><i class="fa fa-shopping-cart" aria-hidden="true"></i></button>
+                                       <button type="" class="btn btn-outline-primary"><i class="fa fa-shopping-cart" aria-hidden="true"></i></button>
                                     </div>
                                  </div>
                               </form>
-                           </div>
-                           <div class="col-md-1 col-sm-12">
                               <form action="{{route('add_wishlistfull')}}" method="Post">
                                  @csrf
                                  <input type="hidden" name="productsId" value="{{$products->id}}" min="1">
-                                 <button type="submit" class="btn btn-outline-dark" style="height:48px;"><i class="fa fa-heart" aria-hidden="true"></i></button>
+                                 <button type="submit" class="btn btn-outline-dark ml-2" style="height:48px;"><i class="fa fa-heart" aria-hidden="true"></i></button>
                               </form>
                            </div>
                         </div>
                      </div>
-                     </div>
+                  </div>
                      <div class="img-box">
                         <img src="{{asset('product/'. $products->image)}}" alt="">
                      </div>
@@ -96,16 +94,13 @@
                         </h5>
                         @if($products->discount_price!=null)
                         <h6 style="color:red">
-
                            {{$products->discount_price}}<span style="color:orange">ETB</span>
                         </h6>
-                        <h6 style="color:blue ;text-decoration:line-through;">
-
+                        <h6 style="color:blue ;text-decoration:line-through; margin-left:10px">
                            {{$products->price}}<span style="color:orange">ETB</span>
                         </h6>
                         @else
                         <h6 style="color:blue">
-
                            {{$products->price}}<span style="color:orange">ETB</span>
                         </h6>
                         @endif

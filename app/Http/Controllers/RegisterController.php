@@ -95,14 +95,14 @@ class RegisterController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'phone' => 'required|min:10',
+            // 'password' => 'required|string|min:8',
+            'phone' => 'required|max:10',
             'address'=> 'required|string|max:255',
-            'password'=> 'required|string|min:8',
+            'password' => 'required|string|confirmed|min:8',
         ]);
 
         if ($request->password !== $request->password_confirmation) {
-            return redirect()->back()->withErrors(['confirmpassword' => 'The password confirmation does not match.'])->withInput();
+            return redirect()->back()->withErrors(['confirmpassword' => 'The password confirmation does notjjj match.'])->withInput();
         }
 
         $newuser = User::create([

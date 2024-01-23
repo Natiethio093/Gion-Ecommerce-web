@@ -10,7 +10,7 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <link rel="shortcut icon" href="{{asset('images/favicon2.png')}}" type="">
-    <title>Product</title>
+    <title>Seller's Product</title>
     <link rel="stylesheet" type="text/css" href="{{asset('home/css/bootstrap.css')}}" />
     <link href="{{asset('css/font-awesome.min.css')}}" rel="stylesheet" />
     <link href="{{asset('home/css/style.css')}}" rel="stylesheet" />

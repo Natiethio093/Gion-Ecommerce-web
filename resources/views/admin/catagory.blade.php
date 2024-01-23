@@ -43,7 +43,7 @@
     th {
       border: 3px solid white;
       font-size: 20px;
-      background: rgb(0, 217, 255);
+      /* background: rgb(0, 217, 255); */
     }
 
     .alert .close {
@@ -100,8 +100,8 @@
 
         <table class="center">
           <tr>
-            <th>Catagory_Name</th>
-            <th>Action</th>
+            <th class="bg-primary">Catagory_Name</th>
+            <th class="bg-primary">Action</th>
           </tr>
           @foreach($catagory as $cat)
           <tr>

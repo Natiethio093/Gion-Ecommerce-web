@@ -21,7 +21,7 @@
 
             <x-validation-errors class="mb-4" />
 
-            <form method="POST" action="{{route('register')}}"> <!-- enctype="multipart/form-data"-->
+            <form method="POST" action="{{route('register')}}">  <!--- enctype="multipart/form-data"--->
                 @csrf
                 @if(session('message'))
                 <div class="text-red" id="flash-message" role="alert" style="text-align:center">
@@ -36,10 +36,10 @@
                     <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
                 </div>
 
-                <!-- <div>
-                    <x-label for="lastname" value="{{ __('Last Name') }}" />
-                    <x-input id="lastname" class="block mt-1 w-full" type="text" name="lastname" :value="old('lastname')" required autofocus autocomplete="lastname" />
-                </div> -->
+                <div class="mt-4">
+                    <x-label for="username" value="{{ __('User Name') }}" />
+                    <x-input id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus autocomplete="username" />
+                </div>
 
                 <div class="mt-4">
                     <x-label for="email" value="{{ __('Email') }}" />
@@ -67,7 +67,7 @@
                 </div>
                 <!-- <div class="mt-4">
                     <x-label for="password" value="{{ __('Customer Photo(Optional)') }}"/>
-                    <input type="file" id="image" name="image" class="block mt-1 w-full" placeholder="Product Image"/>
+                    <input type="file" id="image" name="profile_picture" class="block mt-1 w-full" placeholder="Product Image"/>
                 </div> -->
 
 

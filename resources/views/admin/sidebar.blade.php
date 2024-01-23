@@ -13,7 +13,7 @@
 <body>
     <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <div class="sidebar-brand-wrapper d-flex align-items-center justify-content-center fixed-top">
-            <a class="sidebar-brand brand-logo" href="/redirect"><img src="{{asset('images/logocartta.png')}}" alt="logos" /></a>
+            <a class="sidebar-brand brand-logo" href="/redirect"><img src="{{asset('images/logoadmin.png')}}" alt="logos" /></a>
             <a class="sidebar-brand brand-logo-mini" href="/redirect"></a>
             <button class="navbar-toggler d-lg-none" type="button" data-bs-tggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -91,6 +91,14 @@
                             <i class="mdi mdi-car"></i>
                         </span>
                         <span class="menu-title">Shipping</span>
+                    </a>
+                </li>
+                <li class="nav-item menu-items">
+                    <a class="nav-link" href="{{url('normalusers')}}">
+                        <span class="menu-icon">
+                        <i class="mdi mdi-account"></i>
+                        </span>
+                        <span class="menu-title">Users</span>
                     </a>
                 </li>
                 <li class="nav-item menu-items">

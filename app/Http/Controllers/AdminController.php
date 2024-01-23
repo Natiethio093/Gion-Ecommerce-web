@@ -137,6 +137,24 @@ class AdminController extends Controller
       return redirect('login');
    }
 }
+public function searchuser(Request $req)
+{
+    if(Auth::id()){
+        $searchtext = $req->search;
+        $users = User::where('usertype', 0)
+            ->where(function ($query) use ($searchtext) {
+                $query->where('name', 'LIKE', "%$searchtext%")
+                    ->orWhere('email', 'LIKE', "%$searchtext%")
+                    ->orWhere('phone', 'LIKE', "%$searchtext%")
+                    ->orWhere('id', 'LIKE', "%$searchtext%")
+                    ->orWhere('address', 'LIKE', "%$searchtext%");
+            })
+            ->paginate(9);
+        return view('admin.users', ['users' => $users]);
+    } else {
+        return redirect('login');
+    }
+}
    public function Deletepro($id){
       $user=Product::where('id',$id)->first();
       if($user){
@@ -147,7 +165,6 @@ class AdminController extends Controller
       else{
          return redirect()->back()->with('message','Product Not Found');
       }
-     
    }
    public function DeleteCustpro($id){
       $user=Customersell::where('id',$id)->first();
@@ -160,6 +177,17 @@ class AdminController extends Controller
          return redirect()->back()->with('message','Product Not Found');
       }
      
+   }
+   public function Deleteuser($id){
+      $user=User::where('id',$id)->first();
+      if($user){
+         $deldata=User::find($id);
+         $deldata->delete();
+         return redirect()->back()->with('message','User Deleted Successfully');
+      }
+      else{
+         return redirect()->back()->with('error','User Not Found');
+      }
    }
    public function  EditPro($id){
       if(Auth::id()){
@@ -263,6 +291,10 @@ class AdminController extends Controller
     $data = Order::orderBy('id', 'desc')->get();
 
     return view('admin.order', ['orderdata' => $data]);
+}
+public function users(){
+   $users = User::where('usertype',0)->paginate(9);
+   return view('admin.users',compact('users'));
 }
     public function Change($id){
        $data=Order::find($id);

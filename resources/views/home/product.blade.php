@@ -96,7 +96,7 @@
                      <h6 style="color:red">
                         {{$products->discount_price}}<span style="color:orange">ETB</span>
                      </h6>
-                     <h6 style="color:blue ;text-decoration:line-through;">
+                     <h6 style="color:blue ;text-decoration:line-through; margin-left:10px">
                         {{$products->price}}<span style="color:orange">ETB</span>
                      </h6>
                      @else

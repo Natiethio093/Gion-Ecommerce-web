@@ -11,7 +11,8 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Carbon\Carbon;
 
-class User extends Authenticatable implements MustVerifyEmail
+// class User extends Authenticatable implements MustVerifyEmail//buy pass verify email
+class User extends Authenticatable 
 {
     use HasApiTokens;
     use HasFactory;
@@ -26,13 +27,13 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $fillable = [
         'name',
-        // 'lastname',
+        'username',
         'email',
         'google_id',
         'phone',
         'address',
         'password',
-       
+        // 'profile_pic'
     ];
 
     /**
@@ -53,7 +54,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<string, string>
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        // 'email_verified_at' => 'datetime',
     ];
 
     /**
@@ -62,7 +63,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<int, string>
      */
     protected $appends = [
-        'profile_photo_url',
+        'profile_pic',
     ];
     // public function setEmailVerifiedAtAttribute($value)
     // {

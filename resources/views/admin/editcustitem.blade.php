@@ -133,15 +133,10 @@
             <div class="div_design">
               <label>Item Catagory:</label>
               <select class="input_col" name="catagory">
-                 <option value="{{$custpro->category}}" selected="">{{$custpro->category}}</option>
-                <!--<option value="Mobile">Mobile</option>
-                <option value="Laptop">Laptop</option>
-                <option value="Watch">Watch</option>
-                <option value="Jewelry">Jewelry</option>
-                <option value="Beats Solo">Beats_Solo</option>
-                <option value="AirPod">Air_Pod</option> -->
                 @foreach($category as $cat)
-                 <option value="{{$cat->catagory_name}}">{{$cat->catagory_name}}</option>
+                <option value="{{$cat->catagory_name}}" {{$custpro->category == $cat->catagory_name ? 'selected' : ''}}>
+                  {{$cat->catagory_name}}
+                </option>
                 @endforeach
               </select><br>
               <span class="span">@error('catagory'){{$message}}@enderror</span>
@@ -160,9 +155,9 @@
               <label>Item Verification:</label>
               <!-- <input class="input_col" type="text" name="verification" placeholder="Enter Item Verification" value="{{$custpro->verification}}" /><br> -->
               <select class="input_col" name="verification">
-                 <option value="{{$custpro->verification}}" selected="">{{$custpro->verification}}</option>
-                 <option value="Not Verified">Not Verified</option>
-                 <option value="Verified">Verified</option>
+                 <!-- <option value="{{$custpro->verification}}" selected="">{{$custpro->verification}}</option> -->
+                 <option value="Not Verified" {{$custpro->verification == "Not Verified" ? 'selected' : ''}}>Not Verified</option>
+                 <option value="Verified" {{$custpro->verification == "Verified" ? 'selected' : ''}}>Verified</option>
               </select><br>
               <span class="span">@error('verification'){{$message}}@enderror</span>
             </div>
