@@ -65,7 +65,7 @@
       <div class="container">
          <div class="row justify-content-center">
             <div class="col-sm-4 col-md-8 col-lg-4">
-               <div class=" justify-content-center" style="margin-top:70px;margin-bottom:10px;width:50%;padding:20px;width:400px;border:1px solid gray; box-shadow: 2px 3px 9px rgba(0, 0, 0, 0.5);">
+               <div class="justify-content-center" style="margin-top:70px;margin-bottom:10px;width:50%;padding:20px;width:400px;border:1px solid gray; box-shadow: 2px 3px 9px rgba(0, 0, 0, 0.5);">
                   <div class="img-box" style="padding:20px">
                      <img src="{{asset('product/'. $product->image)}}" alt="" style="max-width: 100%; max-height: 100%; object-fit: contain;">
                   </div>

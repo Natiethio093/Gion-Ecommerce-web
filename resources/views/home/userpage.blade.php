@@ -47,7 +47,7 @@
   <script>
     swal({
       title: "Gion E-Market",
-      text: "{{ Session::get('paysuccess') }}\n\n Ticket reference number: {{ Session::get('ordernumber') }}",
+      text: "{{ Session::get('paysuccess') }}\n\n Order reference number: {{ Session::get('ordernumber') }}",
       // text: "{!! Session::get('paysuccess') !!}\n\n Ticket reference number:\n\n <span class='bold-ticket'>{{ Session::get('ordernumber') }}</span>\n\n Ticket reference number:\n\n <b>{{ Session::get('ordernumber') }}</b>",
       icon: "success",
       buttons: {
@@ -62,12 +62,32 @@
       html: true
     });
   </script>
+  @elseif(Session::has('error'))
+  <script>
+    swal({
+      title: "Gion E-Market",
+      text: "{{ Session::get('error') }}", 
+      icon: "error",
+      buttons: {
+        confirm: {
+          text: "OK",
+          value: true,
+          visible: true,
+          className: "btn btn-danger",
+          closeModal: true
+        }
+      },
+      html: true
+    });
+    </script>
   @endif
 
   <?php
   Session::forget('paysuccess');
 
   Session::forget('ordernumber');
+
+  Session::forget('error');
   ?>
 
   <div class="hero_area">

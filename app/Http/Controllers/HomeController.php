@@ -182,7 +182,7 @@ class HomeController extends Controller
   public function full_product()
   {
     $product = Product::where('quantity', '>', 0)->paginate(9);
-    $category = Catagory::all();
+    $category = Catagory::orderBy('catagory_name', 'asc')->get();
     return view('home.fullproduct', ['product' => $product, 'category' => $category]);
   }
 
@@ -630,7 +630,8 @@ class HomeController extends Controller
     $user = Auth::user();
     $userid = $user->id;
     $date = Carbon::today();
-    $Ordernumber = mt_rand(1000000000, 9999999999);
+    // $Ordernumber = mt_rand(1000000000, 9999999999);
+    $Ordernumber = $this->generateUniqueOrderNumber();
     $data = Cart::where('user_id', $userid)->get();
     $total = Cart::where('user_id', $user->id)->sum('price');
     $totalquantity = Cart::where('user_id', $user->id)->sum('quantity');
@@ -670,14 +671,28 @@ class HomeController extends Controller
     $order->payment_status = 'Cash on delivery';
     $order->delivery_status = 'Pending';
     $order->save();
+    // $idorder = $order->id;
 
     // $this->print_pdf($order->id);
+    if ($order->id) {
+    Session::put('idorder');
+    }
 
     Session::put('Orderdetail', [
-      'Ordernumber' =>   $Ordernumber,
-      'button' => 'QR Code',
+      'Ordernumber' => $Ordernumber,
+      // 'idorder' => $idorder,
+      'butto' => 'QR Code',
       'url' => 'https://github.com/',
     ]);
+    // if ($order->id) {
+    //   // Saving was successful, store order details in the session
+    //   Session::put('Orderdetail', [
+    //       'Ordernumber' => $Ordernumber,
+    //       // 'idorder' => $order->id,
+    //       'butto' => 'QR Code',
+    //       'url' => 'https://github.com/',
+    //   ]);
+    // }
 
     Cart::where('user_id', $userid)->delete();
 
@@ -709,64 +724,7 @@ class HomeController extends Controller
     return view('home.chapapage', compact('total', 'shipid'));
   }
 
-  // public function confirmchapapayment()
-  // {
-
-  //   $user = Auth::user();
-
-  //   $paymentParams = Session::get('payment_parameters');
-  //   $shipid = $paymentParams['shipid'];
-  //   Session::forget('payment_parameters');
-  //   $Ordernumber = mt_rand(1000000000, 9999999999);
-
-  //   //we  can get all information of the login user
-  //   $userid = $user->id;
-  //   $date = Carbon::today();
-  //   $data = Cart::where('user_id', $userid)->get();
-  //   $total = Cart::where('user_id', $user->id)->sum('price');
-  //   $totalquantity = Cart::where('user_id', $user->id)->sum('quantity');
-  //   $cart_products = [];
-  //   $cart_productid = [];
-  //   $cart_image = [];
-  //   $order = new Order();
-  //   $order->name = $data[0]->name;
-  //   $order->email = $data[0]->email;
-  //   $order->phone = $data[0]->phone;
-  //   $order->address = $data[0]->address;
-  //   $order->user_id = $data[0]->user_id;
-  //   $order->date = $date;
-  //   foreach ($data as $item) {
-  //     $cart_products[] = $item->product_title . ' (' . $item->quantity . ')';
-  //     $cart_productid[] = $item->product_id;
-  //     $cart_productquantity[] = $item->quantity;
-  //     $cart_image[] = $item->image;
-  //   }
-  //   $total_products = implode(', ', $cart_products);
-  //   $productsid = implode(', ', $cart_productid);
-  //   $productsquantity = implode(', ', $cart_productquantity);
-  //   $productimg = implode(', ', $cart_image);
-  //   $order->product_title = $total_products;
-  //   $order->eachquantity = $productsquantity;
-  //   $order->product_id = $productsid;
-  //   $order->quantity = $totalquantity;
-  //   $order->price = $total;
-  //   $order->image = $productimg;
-  //   $order->order_no = $Ordernumber;
-  //   $order->shipping_id = $shipid;
-  //   $order->payment_status = 'Paid';
-  //   $order->delivery_status = 'Processing';
-  //   $order->save();
-
-  //   Session::put('Orderdetail', [
-  //     'Ordernumber' =>   $Ordernumber,
-  //     'button' => 'QR Code',
-  //     'url' => 'https://github.com/',
-  //   ]);
-
-  //   Cart::where('user_id', $userid)->delete();
-
-  //   return redirect('/email');
-  // }
+ 
   public function confirmchapapayment()
   {
     $user = Auth::user();
@@ -774,12 +732,7 @@ class HomeController extends Controller
     $paymentParams = Session::get('payment_parameters');
     $shipid = $paymentParams['shipid'];
     Session::forget('payment_parameters');
-
     $Ordernumber = $this->generateUniqueOrderNumber();
-
-    // $Ordernumber = mt_rand(1000000000, 9999999999);
-
-    // Get user and order information
     $userid = $user->id;
     $date = Carbon::today();
     $data = Cart::where('user_id', $userid)->get();
@@ -825,8 +778,11 @@ class HomeController extends Controller
     $order->payment_status = 'Paid';
     $order->delivery_status = 'Processing';
     $order->save();
+    $orderid = $order->id;//
 
     Session::put('Orderdetail', [
+      'Orderid' => $orderid,
+      'Shipid' => $shipid,
       'Ordernumber' => $Ordernumber,
       'button' => 'QR Code',
       'url' => 'https://github.com/',
@@ -890,6 +846,10 @@ class HomeController extends Controller
         $cart_productid[] = $item->product_id;
         $cart_productquantity[] = $item->quantity;
         $cart_image[] = $item->image;
+
+        $product = Product::find($item->product_id);
+        $product->orderQuantity += $item->quantity;
+        $product->save();
       }
       $total_products = implode(', ', $cart_products);
       $productsid = implode(', ', $cart_productid);
@@ -906,8 +866,11 @@ class HomeController extends Controller
       $order->payment_status = 'Paid';
       $order->delivery_status = 'Processing';
       $order->save();
+      $orderid = $order->id;
 
       Session::put('Orderdetail', [
+        'Orderid' => $orderid,
+        'Shipid' => $shipid,
         'Ordernumber' =>   $Ordernumber,
         'button' => 'QR Code',
         'url' => 'https://github.com/',
@@ -947,7 +910,7 @@ class HomeController extends Controller
       'lname' => 'required|string|max:50',
       'email' => 'required|email|max:100',
       'phone' => 'required|string|max:10',
-      'phone2' => 'required|string|max:10',
+      //'phone2' => 'string|max:10',
       'city' => 'required|string|max:50',
       'town' => 'required|string|max:50',
       'kebwor' => 'required|string|max:50',
@@ -964,7 +927,13 @@ class HomeController extends Controller
     $shipping->last_name = $validator['lname'];
     $shipping->email = $validator['email'];
     $shipping->phone = $validator['phone'];
-    $shipping->phone2 = $validator['phone2'];
+    if($req->phone2){
+      $shipping->phone2 = $req->phone2;
+    }
+    else{
+      $shipping->phone2 = null;
+    }
+    
     $shipping->city = $validator['city'];
     $shipping->town = $validator['town'];
     $shipping->kbl_wra = $validator['kebwor'];
@@ -998,6 +967,10 @@ class HomeController extends Controller
         $cart_productid[] = $item->product_id;
         $cart_productquantity[] = $item->quantity;
         $cart_image[] = $item->image;
+
+        $product = Product::find($item->product_id);
+        $product->orderQuantity += $item->quantity;
+        $product->save();
       }
       $total_products = implode(', ', $cart_products);
       $productsid = implode(', ', $cart_productid);
@@ -1014,11 +987,14 @@ class HomeController extends Controller
       $order->payment_status = 'Cash on delivery';
       $order->delivery_status = 'Pending';
       $order->save();
+      $orderid = $order->id;
 
       // $this->print_pdf($order->id);
 
       Session::put('Orderdetail', [
         'Ordernumber' =>   $Ordernumber,
+        'Orderid' =>  $orderid,
+        'Shipid' => $shipid,
         'button' => 'QR Code',
         'url' => 'https://github.com/',
       ]);
@@ -1043,7 +1019,9 @@ class HomeController extends Controller
       $product = Product::find($productID);
       if ($product) {
         $newQuantity = $product->quantity + $quantities[$key];
+        $neworederquantity = $product->orderQuantity - $quantities[$key];
         $product->quantity = $newQuantity;
+        $product->orderQuantity = $neworederquantity;
         $product->save();
       }
     }
