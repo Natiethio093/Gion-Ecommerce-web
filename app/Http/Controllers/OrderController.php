@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Shipping;
@@ -74,6 +75,8 @@ class OrderController extends Controller
         $productIDs = ltrim($order->product_id, ',');
         $productIDs = explode(', ', $order->product_id);
         $quantities = explode(', ', $order->eachquantity);
+        $productitle = ltrim($order->product_title, ',');
+        $productitle = explode(', ',$order->product_title);
     
         foreach ($productIDs as $key => $productID) {
           $product = Product::find($productID);
@@ -84,7 +87,25 @@ class OrderController extends Controller
             $product->orderQuantity = $neworederquantity;
             $product->save();
           }
+          $cartadd = new Cart();
+          $cartadd->name =  $order->name;
+          $cartadd->email =  $order->email;
+          $cartadd->address =  $order->address;
+          $cartadd->phone =  $order->phone;
+          $cartadd->product_title =   $product->title;
+           if($product->discount_price){
+            $cartadd->price =  $product->discount_price;
+           }
+           else{
+            $cartadd->price =  $product->price;
+           }
+          $cartadd->quantity =  $quantities[$key];
+          $cartadd->image =  $product->image;
+          $cartadd->product_id =  $product->id;
+          $cartadd->user_id =  $order->user_id;
+          $cartadd->save();
         }
+        // Shipping::where('id',$order->shipping_id)->delete();
     
         $order->delete();
     

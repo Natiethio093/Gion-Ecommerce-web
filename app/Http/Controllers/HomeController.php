@@ -947,7 +947,8 @@ class HomeController extends Controller
       $user = Auth::user();
       $userid = $user->id;
       $date = Carbon::today();
-      $Ordernumber = mt_rand(1000000000, 9999999999);
+      // $Ordernumber = mt_rand(1000000000, 9999999999);
+      $Ordernumber = $this->generateUniqueOrderNumber();
       $data = Cart::where('user_id', $userid)->get();
       $total = Cart::where('user_id', $user->id)->sum('price');
       $totalquantity = Cart::where('user_id', $user->id)->sum('quantity');
@@ -1025,6 +1026,7 @@ class HomeController extends Controller
         $product->save();
       }
     }
+    Shipping::where('id', $order->shipping_id)->delete();
 
     $order->delete();
 
