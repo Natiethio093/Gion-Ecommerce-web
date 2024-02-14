@@ -162,7 +162,7 @@
       "positionClass": "toast-top-left",
       "closeButton": true,
     }
-    toastr.error("{{ Session::get('message') }}", 'Success!', {
+    toastr.success("{{ Session::get('message') }}", 'Success!', {
       timeOut: 5000
     });
   </script>

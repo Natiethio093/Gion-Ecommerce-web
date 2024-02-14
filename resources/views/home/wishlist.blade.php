@@ -51,6 +51,7 @@
 <section class="product_section layout_padding mt-3">
   @if(isset($wishlist) && $wishlist->count() > 0)
    <div class="container">
+  
    @if(Session::has('Restore'))
       <?php
         $softdata = Session::get('Restore');
@@ -60,6 +61,9 @@
          <div class="col-md-4 mb-4">
            <a href="{{url('restorewish', $wishId)}}" class ="btn btn-dark">Undo<i class="fa fa-undo" aria-hidden="true"></i></a>
         </div>
+      </div>
+      <div class="heading_container heading_center mt-20" style="padding-top:70px">
+        <h2 class="des">Your <span style=" color:#fb4b57">Cart</span></h2>
       </div>
       <?php
         $softdata = Session::forget('Restore');

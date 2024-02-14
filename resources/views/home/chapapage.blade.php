@@ -90,14 +90,14 @@
     <div class="hero_area">
         @include('home.header')
         <div class="container">
-        @if(session('Failed'))
+        <!-- @if(session('Failed'))
             <div class="alert alert-danger" id="flash-message" role="alert" style="text-align:center">
                 {{ session('Failed')}}
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="removeFlashMessage()">
                     <span aria-hidden="true">X</span>
                 </button>
             </div>
-        @endif
+        @endif -->
             <div class="row align-items-center justify-content-center">
                 <div class="col-lg-2 col-md-2">
                     <div class="card shadow new" style="width: 150px; height: 100px;">
@@ -139,14 +139,14 @@
         timeOut: 8000
     });
 </script>
-@elseif(Session::has('failed'))
+@elseif(Session::has('Failed'))
 <script>
     toastr.options = {
         "progressBar": true,
         "positionClass": "toast-top-right",
         "closeButton": true,
     }
-    toastr.error("{{ Session::get('failed') }}", 'Error!', {
+    toastr.error("{{ Session::get('Failed') }}", 'Error!', {
         timeOut: 20000
     });
 </script>

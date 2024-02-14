@@ -158,10 +158,10 @@
                           @else
                           <p class="card-text">Quantity: <span style="color:rgb(25, 233, 6);">{{$pro->quantity}}</span></p>
                           @endif
-                          <div class="d-flex justify-content-between align-items-center mt-auto button-container">
+                          <div class=" d-flex justify-contents-between mt-auto button-container">
                             <div>
                               <!-- <a onclick="return confirm('Do You really Want To Delete This Product?')" class="btn btn-danger mr-2" href={{"deletepro/".$pro->id}}>Delete</a> -->
-                              <a  class="btn btn-danger mr-2 text-white" data-toggle="modal" data-target="#deleteProductModal{{$pro->id }}">Delete</a>
+                              <a  class="btn btn-danger  text-white" data-toggle="modal" data-target="#deleteProductModal{{$pro->id }}">Delete</a>
                               <a class="btn btn-success" href="{{url('editpro',$pro->id)}}">Edit</a>
                             </div>
                           </div>

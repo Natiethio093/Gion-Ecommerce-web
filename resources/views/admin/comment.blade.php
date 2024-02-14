@@ -59,7 +59,7 @@
                     <table class="table">
                         <thead>
                             <tr>
-                                <th class="fs-5">Username</th>
+                                <th class="fs-5">Name</th>
                                 <th class="fs-5">Comment</th>
                                 <th class="fs-5">Delete</th>
                             </tr>

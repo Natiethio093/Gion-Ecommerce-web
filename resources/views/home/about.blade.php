@@ -62,8 +62,8 @@
             <p> Transforming the online shopping experience, we envision becoming the
                 ultimate destination for customers seeking a diverse range of high-quality
                 products. With a commitment to exceptional service, We strive to make a positive
-                impact by supporting local businesses, promoting sustainability, and giving back
-                to our community. Embracing innovation, Join us as we redefine eCommerce,
+                impact by supporting local businesses and user by linking a seller to buyer, promoting sustainability, and giving back
+                to our community. Embracing innovation, Join us as we redefine E-Commerce,
                 unlocking endless possibilities for our customers.</p>
         </div>
     </section>
@@ -72,10 +72,12 @@
     <section class="mission py-5">
         <div class="container text-center  shadow py-4">
             <h2 style="font-size:25px;font-style:bold" class="pb-3"><i class="fas fa-bullseye"></i> Our Mission</h2>
-            <p>Providing a seamless online shopping experience, we are dedicated to offering a diverse
-                range of high-quality products that cater to our customers' needs.Committed to sustainability,
-                We source from ethically conscious suppliers and promote responsible consumption.
-                Our mission is to make a positive impact while delivering convenience, trust, and long-term relationships. </p>
+            <p> 
+                Our mission is to make a positive impact while delivering convenience, trust, and fostering 
+                long term relationships with our customers. We are dedicated to providing a seamless online shopping experience, 
+                offering a diverse range of high quality products that cater to our customers' needs. 
+                Committed to sustainability, we source from ethically conscious suppliers and promote responsible consumption. 
+            </p>
         </div>
     </section>
     @include('home.why')

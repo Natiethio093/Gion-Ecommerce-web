@@ -64,14 +64,14 @@
     @include('home.header')
    
     <div class="center">
-    @if(session('message'))
+    <!-- @if(session('message'))
          <div class="alert alert-success d-flex justify-content-center" id="flash-message" role="alert" style="text-align:center;width:900px;margin-top:100px;margin-left:270px">
               {{session('message')}}
             <button type="button" class="close ml-5" data-dismiss="alert" aria-label="Close" onclick="removeFlashMessage()">
                <span aria-hidden="true">X</span>
             </button>
          </div>
-    @endif
+    @endif -->
       <div class="body d-flex justify-content-center">
        <div class="form-container shadow">
     <form action="{{url('/sellproduct')}}" method="post" enctype="multipart/form-data">

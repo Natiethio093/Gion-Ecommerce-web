@@ -78,5 +78,9 @@ class User extends Authenticatable
     //         }
     //     }
     // }
+    public function getProfilePicAttribute()
+{
+    // Your logic to retrieve the profile picture URL or file path
+}
 
 }

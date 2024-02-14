@@ -333,8 +333,8 @@ class HomeController extends Controller
             $cart->quantity = $req->quantity;
             $cart->image = $product->image;
             $cart->product_id = $product->id;
-            $product->quantity = $product->quantity - $req->quantity; //inventary
-            $product->save();
+            // $product->quantity = $product->quantity - $req->quantity; //inventary   nati
+            // $product->save();
             $cart->save();
             return redirect('/#product')->with('success', 'Product Added To Cart Successfully');
           }
@@ -367,9 +367,9 @@ class HomeController extends Controller
             } else {
               $cartadd->price = $product->price * $quantity;
             }
-            $product->quantity = $product->quantity - $req->quantity; //inventary
+            // $product->quantity = $product->quantity - $req->quantity; //inventary nati
             $cartadd->save();
-            $product->save();
+            // $product->save();
             return redirect()->back()->with('success', 'Product added to cart successfully');
           } else {
             $cart = new Cart();
@@ -388,8 +388,8 @@ class HomeController extends Controller
             $cart->quantity = $req->quantity;
             $cart->image = $product->image;
             $cart->product_id = $product->id;
-            $product->quantity = $product->quantity - $req->quantity; //inventary
-            $product->save();
+            // $product->quantity = $product->quantity - $req->quantity; //inventary nati
+            // $product->save();
             $cart->save();
             return redirect()->back()->with('success', 'Product added to cart successfully!!');
           }
@@ -521,12 +521,12 @@ class HomeController extends Controller
     } else {
       $cart->price = $product->price * $quantity;
     }
-    if ($net > 0) {
-      $product->quantity -= $net;
-    } elseif ($net < 0) {
-      $product->quantity += abs($net);
-    }
-    $product->save();
+    // if ($net > 0) {
+    //   $product->quantity -= $net;
+    // } elseif ($net < 0) {
+    //   $product->quantity += abs($net);
+    // }
+    // $product->save();
     $cart->save();
     return redirect()->back()->with('message', 'Your Cart is Updated Successfully');
   }
@@ -596,9 +596,9 @@ class HomeController extends Controller
     $data = Cart::find($id);
     $data->delete(); //soft delete because SoftDelete included on Cart model data is not removed from the carts table and can be restored when needed
     // $data->forceDelete(); remove data permanently from carts table
-    $product = Product::find($data->product_id);
-    $product->quantity = $product->quantity + $data->quantity; //inventory
-    $product->save();
+    // $product = Product::find($data->product_id);
+    // $product->quantity = $product->quantity + $data->quantity; //inventory  //nati
+    // $product->save();
 
     Session::put('Restore', [
       'cartid' =>    $data->id,
@@ -612,10 +612,10 @@ class HomeController extends Controller
 
     $data = Cart::withTrashed()->find($id);
     $data->restore(); //soft delete because SoftDelete included on Cart model data is not removed from the carts table and can be restored when needed
-    // $data->forceDelete(); remove data permanently from carts table
-    $product = Product::find($data->product_id);
-    $product->quantity = $product->quantity - $data->quantity; //inventory
-    $product->save();
+    // // $data->forceDelete(); remove data permanently from carts table
+    // $product = Product::find($data->product_id); //nati
+    // $product->quantity = $product->quantity - $data->quantity; //inventory  //nati
+    // $product->save();//nati
     return redirect()->back()->with('message', 'The Item Restored  Successfully!');
   }
 
@@ -651,7 +651,6 @@ class HomeController extends Controller
       $cart_productid[] = $item->product_id;
       $cart_productquantity[] = $item->quantity;
       $cart_image[] = $item->image;
-
       $product = Product::find($item->product_id);
       $product->orderQuantity += $item->quantity;
       $product->save();
@@ -728,7 +727,6 @@ class HomeController extends Controller
   public function confirmchapapayment()
   {
     $user = Auth::user();
-
     $paymentParams = Session::get('payment_parameters');
     $shipid = $paymentParams['shipid'];
     Session::forget('payment_parameters');
@@ -759,6 +757,7 @@ class HomeController extends Controller
 
       // Update orderedQuantity in products table
       $product = Product::find($item->product_id);
+      $product->quantity = $product->quantity - $item->quantity;   //nati
       $product->orderQuantity += $item->quantity;
       $product->save();
     }
@@ -783,6 +782,7 @@ class HomeController extends Controller
     Session::put('Orderdetail', [
       'Orderid' => $orderid,
       'Shipid' => $shipid,
+      'userid' => $userid, 
       'Ordernumber' => $Ordernumber,
       'button' => 'QR Code',
       'url' => 'https://github.com/',
@@ -846,8 +846,8 @@ class HomeController extends Controller
         $cart_productid[] = $item->product_id;
         $cart_productquantity[] = $item->quantity;
         $cart_image[] = $item->image;
-
         $product = Product::find($item->product_id);
+        $product->quantity = $product->quantity - $item->quantity; //nati
         $product->orderQuantity += $item->quantity;
         $product->save();
       }
@@ -870,6 +870,7 @@ class HomeController extends Controller
 
       Session::put('Orderdetail', [
         'Orderid' => $orderid,
+        'userid' => $userid, 
         'Shipid' => $shipid,
         'Ordernumber' =>   $Ordernumber,
         'button' => 'QR Code',
@@ -968,8 +969,8 @@ class HomeController extends Controller
         $cart_productid[] = $item->product_id;
         $cart_productquantity[] = $item->quantity;
         $cart_image[] = $item->image;
-
         $product = Product::find($item->product_id);
+        $product->quantity = $product->quantity - $item->quantity;  //nati
         $product->orderQuantity += $item->quantity;
         $product->save();
       }
@@ -993,7 +994,8 @@ class HomeController extends Controller
       // $this->print_pdf($order->id);
 
       Session::put('Orderdetail', [
-        'Ordernumber' =>   $Ordernumber,
+        'Ordernumber' => $Ordernumber,
+        'userid' => $userid,  //nati
         'Orderid' =>  $orderid,
         'Shipid' => $shipid,
         'button' => 'QR Code',

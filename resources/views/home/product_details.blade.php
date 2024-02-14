@@ -127,7 +127,7 @@
                            <div class="d-flex flex-md-row align-items-center mt-3">
                            <form action="{{route('store')}}">
                               <input type="hidden" name="productcategory" value="{{$product->category}}">
-                              <button type="submit" class="btn btn-outline-success" style="margin-bottom:10px;">Store</button>
+                              <button type="submit" class="btn btn-outline-success" style="margin-bottom:10px;">More</button>
                            </form>
                            <a href="{{url()->previous()}}" class="btn btn-outline-danger" style="margin-left: 10px; margin-bottom: 10px;">Back</a>
                            </div>

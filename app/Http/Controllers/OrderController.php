@@ -24,6 +24,8 @@ class OrderController extends Controller
   
         $Ordernumber = $Orderdetail['Ordernumber'];
 
+        $Userid = $Orderdetail['userid'];
+
         $Orderid = $Orderdetail['Orderid'];
 
         $shipid = $Orderdetail['Shipid'];
@@ -61,9 +63,14 @@ class OrderController extends Controller
         // Order::where('id',$Orderid)->delete();
         $orderdelete = $this->cancel_order($Orderid);
         Shipping::where('id',$shipid)->delete();
+        $data = Cart::where('user_id', $Userid)->get();
+        // foreach ($data as $item) {
+        //   $product = Product::find($item->product_id);
+        //   $product->quantity = $product->quantity + $item->quantity;   //nati
+        //   $product->save();
+        // }
         Log::error('Error sending order confirmation email: ' . $e->getMessage());
-        
-        Session::put('error','An error occurred while sending the order confirmation email. Please try again later.');
+        Session::put('error','An error occurred while processing order . Please try again later.');
         return redirect('/redirect');
     }
        

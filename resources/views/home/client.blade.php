@@ -48,7 +48,6 @@ $user = User::find(auth()->user()->id);
                         Customer
                      </h6>
                      <p>
-                        <!-- Dignissimos reprehenderit repellendus nobis error quibusdam? Atque animi sint unde quis reprehenderit, et, perspiciatis, debitis totam est deserunt eius officiis ipsum ducimus ad labore modi voluptatibus accusantium sapiente nam! Quaerat. -->
                         Welcome to gion E-commerse website we offer vast varity of products to satisfy your need enjoy your stay.
                      </p>
                   </div>
